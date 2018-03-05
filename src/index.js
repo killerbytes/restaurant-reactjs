@@ -3,13 +3,14 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 // import axios from 'axios'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 
 import registerServiceWorker from './registerServiceWorker';
 import store from './store'
+import './sass/main.css'
 
 import Home from "./modules/Home";
-import Menu from "./modules/Menu";
 import Cart from "./modules/Cart";
 
 
@@ -27,14 +28,13 @@ import Cart from "./modules/Cart";
 
 class App extends React.Component {
   render() {
-    return <div>
+    return <MuiThemeProvider>
 
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/menu/:id" component={Menu} />
           <Route path="/carts/:id" component={Cart} />
         </Switch>
-      </div>;
+      </MuiThemeProvider>;
   }
 }
 

@@ -7,7 +7,7 @@ export function getCategories(){
     axios
       .get(`${url.api}/api/categories`, {})
       .then(res=> resolve(res.data))
-      .catch(err=>err)
+      .catch(err=>reject(err))
   })
 }
 
@@ -16,7 +16,7 @@ export function getTables(){
     axios
       .get(`${url.api}/api/tables`, {})
       .then(res=> resolve(res.data))
-      .catch(err=>err)
+      .catch(err=>reject(err))
   })
 }
 
@@ -25,16 +25,29 @@ export function getOrders(){
     axios
       .get(`${url.api}/api/orders`, {})
       .then(res=> resolve(res.data))
-      .catch(err=>err)
+      .catch(err=>reject(err))
   })
 }
 
-export function getCart(id){ //TODO
+export function postOrders(orders, cart_id){
+  return new Promise((resolve, reject)=>{
+    axios
+      .post(`${url.api}/api/orders`, {
+        orders,
+        cart_id
+      })
+      .then(res=> resolve(res.data))
+      .catch(err=>reject(err))
+  })
+}
+
+
+export function getCart(id){ 
   return new Promise((resolve, reject)=>{
     axios
       .get(`${url.api}/api/carts/${id}`, {})
       .then(res=> resolve(res.data))
-      .catch(err=>err)
+      .catch(err=>reject(err))
   })
 }
 
@@ -43,7 +56,7 @@ export function getCarts(){ //TODO
     axios
       .get(`${url.api}/api/carts`, {})
       .then(res=> resolve(res.data))
-      .catch(err=>err)
+      .catch(err=>reject(err))
   })
 }
 
@@ -52,7 +65,7 @@ export function postCart(cart){
     axios
       .post(`${url.api}/api/carts`, cart)
       .then(res=> resolve(res.data))
-      .catch(err=>err)
+      .catch(err=>reject(err))
   })
 }
 
@@ -61,7 +74,7 @@ export function postTransaction(transaction){
     axios
       .post(`${url.api}/api/transactions`, transaction)
       .then(res=> resolve(res.data))
-      .catch(err=>err)
+      .catch(err=>reject(err))
   })
 }
 
@@ -71,6 +84,19 @@ export function getMenu(){
     axios
       .get(`${url.api}/api/utils/menu`, {})
       .then(res=> resolve(res.data))
-      .catch(err=>err)
+      .catch(err=>reject(err))
+  })
+}
+
+export function changeCustomer(item){
+  const {id, table_id, name} = item
+  return new Promise((resolve, reject)=>{
+    axios
+      .patch(`${url.api}/api/carts/${id}/customer`, {
+        table_id,
+        name
+      })
+      .then(res=> resolve(res.data))
+      .catch(err=>reject(err))
   })
 }

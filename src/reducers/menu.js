@@ -5,7 +5,7 @@ import {
 
 export default function reducer(
   state = {
-    loading: false, items: [],
+    loading: false, items: []
   },
   action
 ) {
