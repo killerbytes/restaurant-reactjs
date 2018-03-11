@@ -1,104 +1,100 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
-import RaisedButton from 'material-ui/RaisedButton';
 import AppBar from 'material-ui/AppBar';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import NavigationCheck from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import SvgIcon from 'material-ui/SvgIcon';
 import ActionHome from 'material-ui/svg-icons/action/home';
 
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
 import { fetchTablesIfNeeded } from '../../actions/tableActions'
-import { saveCart, fetchCarts } from '../../actions/cartActions'
-import {fetchMenuIfNeeded} from '../../actions/menuActions'
+import { saveCart, getCarts } from '../../actions/cartActions'
+import { fetchMenuIfNeeded } from '../../actions/menuActions'
 
 import Menu from '../../components/Menu'
 import TablePicker from '../../components/TablePicker'
 import Orders from '../../components/Orders'
 
-const getInitialState=()=>{
+const getInitialState = () => {
   return {
     isOpenMenu: false,
     isOpenTablePicker: false,
     table: {},
-    orders: []  
+    orders: []
   }
 }
-class Home extends React.Component{
-  constructor(props){
+class Home extends React.Component {
+  constructor(props) {
     super(props)
-    console.log('cons')
     this.state = getInitialState()
   }
-  componentDidMount(){
+  componentDidMount() {
     this.props.fetchCategoriesIfNeeded()
     this.props.fetchTablesIfNeeded()
     this.props.fetchMenuIfNeeded()
-    this.props.fetchCarts()
+    this.props.getCarts()
   }
-  handleTableItem=(item)=>{
+  handleTableItem = (item) => {
     this.handleMenu(true)
   }
-  handleMenu=(isOpenMenu=false)=>{
-    this.setState({isOpenMenu})
+  handleMenu = (isOpenMenu = false) => {
+    this.setState({ isOpenMenu })
   }
 
-  handleTablePicker=(isOpenTablePicker=false)=>{
-    this.setState({isOpenTablePicker})
+  handleTablePicker = (isOpenTablePicker = false) => {
+    this.setState({ isOpenTablePicker })
   }
 
-  handleMenuItem=(item)=>{
-    const {orders} = this.state
+  handleMenuItem = (item) => {
+    const { orders } = this.state
     const { id, name, price } = item
-    const exists = orders.find(i=>i.product_id === item.id)
-    if(exists){
+    const exists = orders.find(i => i.product_id === item.id)
+    if (exists) {
       exists.quantity += 1
-		}else{
+    } else {
       orders.push({
         product_id: id,
         name,
         price,
         quantity: 1
       })
-    }   
+    }
 
 
-    this.setState({orders})
+    this.setState({ orders })
   }
 
-  handleTableItem=(item, cart)=>{
-    const {orders} = this.state
-    if(cart){
+  handleTableItem = (item, cart) => {
+    const { orders } = this.state
+    if (cart) {
       this.props.history.push(`/carts/${cart.id}`)
     }
-    else{
+    else {
       this.setState({
         table: item
       })
-      if(!orders.length){
+      if (!orders.length) {
         this.handleMenu(true)
       }
       this.handleTablePicker()
     }
   }
 
-  increaseQty=(item)=>{
-    const {orders} = this.state
+  increaseQty = (item) => {
+    const { orders } = this.state
     item.quantity += 1
     this.setState({
       orders
     })
   }
 
-  decreaseQty=(item)=>{
-    const {orders} = this.state
+  decreaseQty = (item) => {
+    const { orders } = this.state
     item.quantity -= 1
-    if(item.quantity === 0){
-      const removeIndex = orders.map((item)=> item.id).indexOf(item.id);
+    if (item.quantity === 0) {
+      const removeIndex = orders.map((item) => item.id).indexOf(item.id);
       orders.splice(removeIndex, 1)
     }
     this.setState({
@@ -106,9 +102,9 @@ class Home extends React.Component{
     })
   }
 
-  submit =()=>{
-    const {orders, table} = this.state
-    if(!table.name){
+  submit = () => {
+    const { orders, table } = this.state
+    if (!table.name) {
       this.handleTablePicker(true)
       return false
     }
@@ -117,51 +113,51 @@ class Home extends React.Component{
       table_id: table.id,
       orders
     }
-    this.props.saveCart(cart).then(res=>{
+    this.props.saveCart(cart).then(res => {
       this.props.fetchCarts()
       this.setState(getInitialState())
     })
   }
 
-  render(){
-    const {tables, carts, menu} = this.props
+  render() {
+    const { tables, carts, menu } = this.props
     const { table, orders } = this.state
     return <div>
       <AppBar
         title={table.name || 'Orders'}
-        iconElementLeft={<IconButton onClick={()=>this.handleTablePicker(true)}><ActionHome/></IconButton>}
-        iconElementRight={<FlatButton label="Menu" onClick={()=>this.handleMenu(true)} />}  />
-      
-      <TablePicker 
+        iconElementLeft={<IconButton onClick={() => this.handleTablePicker(true)}><ActionHome /></IconButton>}
+        iconElementRight={<FlatButton label="Menu" onClick={() => this.handleMenu(true)} />} />
+
+      <TablePicker
         isOpen={this.state.isOpenTablePicker}
-        onCloseModal={this.handleTablePicker }
+        onCloseModal={this.handleTablePicker}
         onClickItem={this.handleTableItem}
-        carts={ carts }
+        carts={carts}
         tables={tables} />
-      <Menu         
-        isOpen={this.state.isOpenMenu }
+      <Menu
+        isOpen={this.state.isOpenMenu}
         onCloseModal={this.handleMenu}
         onClickItem={this.handleMenuItem}
         menu={menu} />
 
-      { 
+      {
         orders.length
-        ? 
+          ?
           <div>
             <Orders
               onAdd={this.increaseQty}
               onRemove={this.decreaseQty}
-              items={orders}/>
+              items={orders} />
 
-            <FloatingActionButton onClick={this.submit} style={{position: 'fixed', bottom: '2rem', right: '2rem'}}>
+            <FloatingActionButton onClick={this.submit} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
               <NavigationCheck />
             </FloatingActionButton>
-            
+
           </div>
-        : null
+          : null
       }
-      
-      
+
+
     </div>
   }
 }
@@ -171,12 +167,12 @@ const mapDispatchToProps = dispatch => {
     fetchCategoriesIfNeeded,
     fetchTablesIfNeeded,
     saveCart,
-    fetchCarts,
+    getCarts,
     fetchMenuIfNeeded
   }, dispatch)
 };
 
-const mapStateToProps = ({categories, tables, carts, menu}) => ({
+const mapStateToProps = ({ categories, tables, carts, menu }) => ({
   categories,
   tables,
   carts,
@@ -185,6 +181,6 @@ const mapStateToProps = ({categories, tables, carts, menu}) => ({
 
 
 export default connect(
-  mapStateToProps,  
+  mapStateToProps,
   mapDispatchToProps
 )(Home);

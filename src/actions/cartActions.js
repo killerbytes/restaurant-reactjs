@@ -1,62 +1,64 @@
-import { 
-  FETCH_CART_FULFILLED, 
-  FETCH_CARTS_FULFILLED, 
-  SAVE_CART, 
-  SAVE_CART_FULFILLED,
-  SAVE_CHANGE_CUSTOMER_FULFILLED
-} from "../constants/actionTypes";
-import { getCart, getCarts, postCart, changeCustomer } from '../utils/api';
+import { fetchCart, fetchCarts, createCart, changeCustomer } from '../utils/api';
+
+export const FETCH_CART = "FETCH_CART"
+export const FETCH_CART_FULFILLED = "FETCH_CART_FULFILLED"
+export const FETCH_CARTS = "FETCH_CARTS"
+export const FETCH_CARTS_FULFILLED = "FETCH_CARTS_FULFILLED"
+export const SAVE_CART = "SAVE_CART"
+export const SAVE_CART_FULFILLED = "SAVE_CART_FULFILLED"
+export const SAVE_CHANGE_CUSTOMER_FULFILLED = "SAVE_CHANGE_CUSTOMER_FULFILLED"
 
 
-export function fetchCart(id){
-  return function(dispatch){
 
-    return getCart(id)
-    .then(res=>{
-      return dispatch({
-        type: FETCH_CART_FULFILLED,
-        payload: res
-      });
-    })  
-    .catch(err=>{
-    })
+export function getCart(id) {
+  return function (dispatch) {
+
+    return fetchCart(id)
+      .then(res => {
+        return dispatch({
+          type: FETCH_CART_FULFILLED,
+          payload: res
+        });
+      })
+      .catch(err => {
+      })
   }
 }
 
-export function fetchCarts(){
-  return function(dispatch){
+export function getCarts() {
+  return function (dispatch) {
 
-    return getCarts().then(res=>{
+    return fetchCarts().then(res => {
       return dispatch({
         type: FETCH_CARTS_FULFILLED,
         payload: res
       });
-    })  
+    })
   }
 }
 
-export function updateCustomer(item){
-  return function(dispatch){
+export function updateCustomer(item) {
+  return function (dispatch) {
 
-    return changeCustomer(item).then(res=>{
+    return changeCustomer(item).then(res => {
       return dispatch({
         type: SAVE_CHANGE_CUSTOMER_FULFILLED,
         payload: res
       });
-    })  
+    })
   }
 }
 
 
-export function saveCart(cart){
-  return function(dispatch){
-    dispatch({type: SAVE_CART})
-    return postCart(cart).then(res=>{
+export function saveCart(cart) {
+  return function (dispatch) {
+    dispatch({ type: SAVE_CART })
+    return createCart(cart).then(res => {
       return dispatch({
         type: SAVE_CART_FULFILLED,
         payload: res
-      });      
-    })  
+      });
+    })
   }
 }
 

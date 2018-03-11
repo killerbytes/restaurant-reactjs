@@ -1,11 +1,11 @@
 import {
   SAVE_TRANSACTION,
   SAVE_TRANSACTION_FULFILLED
-} from "../constants/actionTypes";
+} from "../actions/transactionActions";
 
 export default function reducer(
   state = {
-    loading: false, items: [], item: { cart: []}
+    loading: false, items: [], item: { cart: [] }
   },
   action
 ) {

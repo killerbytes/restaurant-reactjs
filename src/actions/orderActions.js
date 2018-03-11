@@ -1,27 +1,30 @@
-import * as actionTypes from "../constants/actionTypes";
-import { getOrders, postOrders } from '../utils/api';
+import { fetchOrders, createOrders } from '../utils/api';
+
+export const FETCH_ORDERS = "FETCH_ORDERS"
+export const FETCH_ORDERS_FULFILLED = "FETCH_ORDERS_FULFILLED"
+export const SAVE_ORDERS_FULFILLED = "SAVE_ORDERS_FULFILLED"
 
 
-export function fetchOrders(){
-  return function(dispatch){
+export function getOrders() {
+  return function (dispatch) {
 
-    return getOrders().then(res=>{
+    return fetchOrders().then(res => {
       return dispatch({
-        type: actionTypes.FETCH_ORDERS_FULFILLED,
+        type: FETCH_ORDERS_FULFILLED,
         payload: res
       });
-    })  
+    })
   }
 }
 
-export function saveOrders(orders, cart_id){
-  return function(dispatch){
+export function saveOrders(orders, cart_id) {
+  return function (dispatch) {
 
-    return postOrders(orders, cart_id).then(res=>{
+    return createOrders(orders, cart_id).then(res => {
       return dispatch({
-        type: actionTypes.SAVE_ORDERS_FULFILLED,
+        type: SAVE_ORDERS_FULFILLED,
         payload: res
       });
-    })  
+    })
   }
 }

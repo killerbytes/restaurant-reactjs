@@ -1,19 +1,18 @@
-import { 
-  SAVE_TRANSACTION, 
-  SAVE_TRANSACTION_FULFILLED
-} from "../constants/actionTypes";
-import { postTransaction } from '../utils/api';
+import { createTransaction } from '../utils/api';
+
+export const SAVE_TRANSACTION = "SAVE_TRANSACTION"
+export const SAVE_TRANSACTION_FULFILLED = "SAVE_TRANSACTION_FULFILLED"
 
 
-export function saveTransaction(transaction){
-  return function(dispatch){
-    dispatch({type: SAVE_TRANSACTION})
-    return postTransaction(transaction).then(res=>{
+export function saveTransaction(transaction) {
+  return function (dispatch) {
+    dispatch({ type: SAVE_TRANSACTION })
+    return createTransaction(transaction).then(res => {
       return dispatch({
         type: SAVE_TRANSACTION_FULFILLED,
         payload: res
-      });      
-    })  
+      });
+    })
   }
 }
 

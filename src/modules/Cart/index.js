@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
 import Subheader from 'material-ui/Subheader';
-import { Link } from 'react-router-dom'
+import io from 'socket.io-client'
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import { getTotals } from '../../utils'
-import { fetchCart, fetchCarts, updateCustomer } from '../../actions/cartActions'
+import { getCart, getCarts, updateCustomer } from '../../actions/cartActions'
 import { saveTransaction } from '../../actions/transactionActions'
 import { fetchMenuIfNeeded } from '../../actions/menuActions'
 import { saveOrders } from '../../actions/orderActions'
@@ -28,31 +28,36 @@ import Menu from '../../components/Menu'
 import Orders from '../../components/Orders'
 import TablePicker from '../../components/TablePicker'
 
-const getInitialState=()=>{
+const socket = io('http://localhost:8000')
+
+const getInitialState = () => {
   return {
     isOpenMenu: false,
     isOpenTablePicker: false,
     table: {},
-    orders: []  
+    orders: []
   }
 }
 
-class Cart extends React.Component{
-  constructor(props){
+class Cart extends React.Component {
+  constructor(props) {
     super(props)
     this.state = getInitialState()
   }
-  componentDidMount(){
-    const {match: {params}} = this.props
+  componentDidMount() {
+    const { match: { params } } = this.props
     this.props.fetchTablesIfNeeded()
-    this.props.fetchCarts()
-    this.props.fetchCart(params.id)
+    this.props.getCarts()
+    this.props.getCart(params.id)
     this.props.fetchMenuIfNeeded()
 
 
   }
 
-  checkout=()=>{
+  checkout = () => {
+    console.log(this.props)
+    socket.emit('system_message', JSON.stringify({ type: 'CHECKOUT', payload: this.props.carts.item }));
+
     // const { carts } = this.props
 
     // let transaction = {
@@ -67,135 +72,135 @@ class Cart extends React.Component{
     // this.props.saveTransaction(transaction)
   }
 
-  increaseQty=(item)=>{
-    const {orders} = this.state
+  increaseQty = (item) => {
+    const { orders } = this.state
     item.quantity += 1
     this.setState({
       orders
     })
   }
 
-  decreaseQty=(item)=>{
-    const {orders} = this.state
+  decreaseQty = (item) => {
+    const { orders } = this.state
     item.quantity -= 1
-    if(item.quantity === 0){
-      const removeIndex = orders.map((item)=> item.id).indexOf(item.id);
+    if (item.quantity === 0) {
+      const removeIndex = orders.map((item) => item.id).indexOf(item.id);
       orders.splice(removeIndex, 1)
     }
     this.setState({
       orders
     })
   }
-  handleTablePicker=(isOpenTablePicker=false)=>{
-    this.setState({isOpenTablePicker})
+  handleTablePicker = (isOpenTablePicker = false) => {
+    this.setState({ isOpenTablePicker })
   }
-  handleTableItem=(item)=>{
-    const {carts, match: {params}} = this.props
-    const {name, id} = item
+  handleTableItem = (item) => {
+    const { carts, match: { params } } = this.props
+    const { name, id } = item
     this.props.updateCustomer({
       id: carts.item.id,
       name: name,
       table_id: id
-    }).then(res=>{
+    }).then(res => {
       this.props.fetchTablesIfNeeded()
-      this.props.fetchCarts()
-      this.props.fetchCart(params.id)
+      this.props.getCarts()
+      this.props.getCart(params.id)
       this.handleTablePicker()
-  
+
     })
   }
 
-  handleMenu=(isOpenMenu=false)=>{
-    this.setState({isOpenMenu})
+  handleMenu = (isOpenMenu = false) => {
+    this.setState({ isOpenMenu })
   }
 
-  handleMenuItem=(item)=>{
-    const {orders} = this.state
+  handleMenuItem = (item) => {
+    const { orders } = this.state
     const { id, name, price } = item
-    const exists = orders.find(i=>i.product_id === item.id)
-    if(exists){
+    const exists = orders.find(i => i.product_id === item.id)
+    if (exists) {
       exists.quantity += 1
-		}else{
+    } else {
       orders.push({
         product_id: id,
         name,
         price,
         quantity: 1
       })
-    }   
+    }
   }
 
-  handleAdditionalOrders=()=>{
+  handleAdditionalOrders = () => {
     const { orders } = this.state
-    const { carts: {item} } = this.props
+    const { carts: { item } } = this.props
     this.props.saveOrders(orders, item.id)
-      .then(res=>{
-        this.props.fetchCart(item.id)
+      .then(res => {
+        this.props.getCart(item.id)
         this.setState(getInitialState())
       })
   }
 
-  render(){
+  render() {
     const { carts, menu, tables } = this.props
     const { orders } = this.state
     const item = carts.item
     const total = getTotals(item.orders)
-    const mappedOrders = item.orders.map(item=>{
-      return <TableRow key={item.id} displayBorder={false} hoverable={true} selectable={false}> 
-        <TableRowColumn style={{whiteSpace: 'normal'}}>{item.product.name}</TableRowColumn>
-        <TableRowColumn style={{width: 70, textAlign: 'right'}}>{item.quantity}</TableRowColumn>
-        <TableRowColumn style={{width: 70, textAlign: 'right'}}>{parseFloat(item.price).toFixed(2)}</TableRowColumn>
-        <TableRowColumn style={{width: 70, textAlign: 'right'}}>{(item.quantity * item.price).toFixed(2)}</TableRowColumn>
+    const mappedOrders = item.orders.map(item => {
+      return <TableRow key={item.id} displayBorder={false} hoverable={true} selectable={false}>
+        <TableRowColumn style={{ whiteSpace: 'normal' }}>{item.product.name}</TableRowColumn>
+        <TableRowColumn style={{ width: 70, textAlign: 'right' }}>{item.quantity}</TableRowColumn>
+        <TableRowColumn style={{ width: 70, textAlign: 'right' }}>{parseFloat(item.price).toFixed(2)}</TableRowColumn>
+        <TableRowColumn style={{ width: 70, textAlign: 'right' }}>{(item.quantity * item.price).toFixed(2)}</TableRowColumn>
       </TableRow>
     })
-    
+
     return <div>
       <AppBar
         title={item && item.customer.name}
-        onTitleClick={()=>this.handleTablePicker(true)}
-        iconElementLeft={<IconButton onClick={()=> this.props.history.push('/') }><NavigationClose /></IconButton>}
-        iconElementRight={<FlatButton label="Add Orders" onClick={()=>this.handleMenu(true)} />}  />
+        onTitleClick={() => this.handleTablePicker(true)}
+        iconElementLeft={<IconButton onClick={() => this.props.history.push('/')}><NavigationClose /></IconButton>}
+        iconElementRight={<FlatButton label="Add Orders" onClick={() => this.handleMenu(true)} />} />
       <Table>
         <TableBody displayRowCheckbox={false}>
           {mappedOrders}
           <TableRow>
             <TableRowColumn />
             <TableRowColumn />
-            <TableRowColumn style={{textAlign:'right', fontWeight: 'bold'}}>Total</TableRowColumn>
-            <TableRowColumn style={{width: 70, textAlign: 'right', fontWeight: 'bold'}}>{total.amount_due.toFixed(2)}</TableRowColumn>
+            <TableRowColumn style={{ textAlign: 'right', fontWeight: 'bold' }}>Total</TableRowColumn>
+            <TableRowColumn style={{ width: 70, textAlign: 'right', fontWeight: 'bold' }}>{total.amount_due.toFixed(2)}</TableRowColumn>
           </TableRow>
-          
+
         </TableBody>
       </Table>
-      
-      { orders.length 
-        ? 
-          <div> 
-            <Subheader>Add Orders</Subheader>
-            <Orders
-              onAdd={this.increaseQty}
-              onRemove={this.decreaseQty}
-              items={orders}/>
-            <RaisedButton label="Order" onClick={this.handleAdditionalOrders}/>
-          </div>
+
+      {orders.length
+        ?
+        <div>
+          <Subheader>Add Orders</Subheader>
+          <Orders
+            onAdd={this.increaseQty}
+            onRemove={this.decreaseQty}
+            items={orders} />
+          <RaisedButton label="Order" onClick={this.handleAdditionalOrders} />
+        </div>
         :
-          (null)
+        (null)
       }
 
-      {menu && <Menu         
-        isOpen={this.state.isOpenMenu }
+      {menu && <Menu
+        isOpen={this.state.isOpenMenu}
         onCloseModal={this.handleMenu}
         onClickItem={this.handleMenuItem}
         menu={menu} />}
 
-      <TablePicker 
+      <TablePicker
         isOpen={this.state.isOpenTablePicker}
-        onCloseModal={this.handleTablePicker }
+        onCloseModal={this.handleTablePicker}
         onClickItem={this.handleTableItem}
-        carts={ carts }
+        carts={carts}
         tables={tables} />
 
-      <FloatingActionButton onClick={this.checkout} style={{position: 'fixed', bottom: '2rem', right: '2rem'}}>
+      <FloatingActionButton onClick={this.checkout} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
         <ContentAdd />
       </FloatingActionButton>
 
@@ -205,8 +210,8 @@ class Cart extends React.Component{
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    fetchCart,
-    fetchCarts,
+    getCart,
+    getCarts,
     updateCustomer,
     fetchMenuIfNeeded,
     fetchTablesIfNeeded,
@@ -215,7 +220,7 @@ const mapDispatchToProps = dispatch => {
   }, dispatch)
 };
 
-const mapStateToProps = ({categories, tables, carts, menu}) => ({
+const mapStateToProps = ({ categories, tables, carts, menu }) => ({
   categories,
   tables,
   carts,
@@ -224,7 +229,7 @@ const mapStateToProps = ({categories, tables, carts, menu}) => ({
 
 
 export default connect(
-  mapStateToProps,  
+  mapStateToProps,
   mapDispatchToProps
 )(Cart);
 

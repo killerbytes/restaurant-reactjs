@@ -1,7 +1,7 @@
 import {
   FETCH_MENU,
   FETCH_MENU_FULFILLED
-} from "../constants/actionTypes";
+} from "../actions/menuActions";
 
 export default function reducer(
   state = {
@@ -14,7 +14,7 @@ export default function reducer(
       return { ...state, loading: true, items: [] };
     }
     case FETCH_MENU_FULFILLED: {
-      return { ...state, loading: false, ...action.payload  };
+      return { ...state, loading: false, ...action.payload.data };
     }
     default:
       return state;

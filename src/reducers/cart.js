@@ -5,11 +5,11 @@ import {
   FETCH_CARTS_FULFILLED,
   SAVE_CART,
   SAVE_CART_FULFILLED
-} from "../constants/actionTypes";
+} from "../actions/cartActions";
 
 export default function reducer(
   state = {
-    loading: false, items: [], item: { orders: [], customer: {}}
+    loading: false, items: [], item: { orders: [], customer: {} }
   },
   action
 ) {
@@ -19,13 +19,13 @@ export default function reducer(
       return { ...state, loading: true, item: {} };
     }
     case FETCH_CART_FULFILLED: {
-      return { ...state, loading: false, ...action.payload  };
+      return { ...state, loading: false, ...action.payload.data };
     }
     case FETCH_CARTS: {
       return { ...state, loading: true, items: [] };
     }
     case FETCH_CARTS_FULFILLED: {
-      return { ...state, loading: false, ...action.payload  };
+      return { ...state, loading: false, ...action.payload.data };
     }
     case SAVE_CART: {
       return { ...state, loading: true };

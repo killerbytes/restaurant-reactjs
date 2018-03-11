@@ -1,35 +1,37 @@
-import {FETCH_MENU, FETCH_MENU_FULFILLED} from "../constants/actionTypes";
-import { getMenu } from '../utils/api';
+import { fetchMenu } from '../utils/api';
+
+export const FETCH_MENU = "FETCH_MENU"
+export const FETCH_MENU_FULFILLED = "FETCH_MENU_FULFILLED"
 
 
-function shouldFetchMenu(state){
-  const {menu} = state
-  if(!menu.items.length){
+function shouldFetchMenu(state) {
+  const { menu } = state
+  if (!menu.items.length) {
     return true
-  }else{
+  } else {
     return false
   }
 }
 
-export function fetchMenuIfNeeded(){
-  return function(dispatch, getState){
-    if(shouldFetchMenu(getState())){
-      return dispatch(fetchMenu())
-    }else{
+export function fetchMenuIfNeeded() {
+  return function (dispatch, getState) {
+    if (shouldFetchMenu(getState())) {
+      return dispatch(getMenu())
+    } else {
       const { menu } = getState()
-      return Promise.resolve( menu )
+      return Promise.resolve(menu)
     }
   }
 }
 
-export function fetchMenu(){
-  return function(dispatch){
+export function getMenu() {
+  return function (dispatch) {
     dispatch({ type: FETCH_MENU });
-    return getMenu().then(res=>{
+    return fetchMenu().then(res => {
       return dispatch({
         type: FETCH_MENU_FULFILLED,
         payload: res
       });
-    })  
+    })
   }
 }

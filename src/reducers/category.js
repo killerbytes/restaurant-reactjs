@@ -1,7 +1,7 @@
 import {
   FETCH_CATEGORIES,
   FETCH_CATEGORIES_FULFILLED
-} from "../constants/actionTypes";
+} from "../actions/categoryActions";
 
 export default function reducer(
   state = {
@@ -14,7 +14,7 @@ export default function reducer(
       return { ...state, loading: true, items: [] };
     }
     case FETCH_CATEGORIES_FULFILLED: {
-      return { ...state, loading: false, ...action.payload  };
+      return { ...state, loading: false, ...action.payload };
     }
     default:
       return state;
