@@ -12,7 +12,10 @@ import './sass/main.css'
 
 import Home from "./modules/Home";
 import Cart from "./modules/Cart";
-import Transactions from "./modules/Transactions";
+import AdminCartList from "./modules/admin/Carts";
+import AdminCartDetail from "./modules/admin/Carts/Detail";
+import AdminTransactions from "./modules/admin/Transactions";
+import AdminTransactionDetail from "./modules/admin/Transactions/Detail";
 
 
 // axios.interceptors.response.use(
@@ -34,7 +37,10 @@ class App extends React.Component {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/carts/:id" component={Cart} />
-        <Route path="/transactions" component={Transactions} />
+        <Route path="/admin/transactions/:id" component={AdminTransactionDetail} />
+        <Route path="/admin/transactions" component={AdminTransactions} />
+        <Route path="/admin/carts/:id" component={AdminCartDetail} />
+        <Route path="/admin/carts" component={AdminCartList} />
       </Switch>
     </MuiThemeProvider>;
   }

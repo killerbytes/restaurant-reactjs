@@ -10,9 +10,6 @@ export function fetchTables() {
   return axios.get(`${url.api}/api/tables`)
 }
 
-export function createTransaction(transaction) {
-  return axios.post(`${url.api}/api/transactions`, transaction)
-}
 
 export function fetchMenu() {
   return axios.get(`${url.api}/api/utils/menu`)
@@ -52,3 +49,20 @@ export function createOrders(orders, cart_id) {
   })
 }
 // END ORDERS
+
+// START TRANSACTIONS
+export function fetchTransaction(id) {
+  return axios.get(`${url.api}/api/transactions/${id}`)
+}
+
+export function fetchTransactions() {
+  return axios.get(`${url.api}/api/transactions`)
+}
+
+
+export function createTransaction(transaction) {
+  return axios.post(`${url.api}/api/transactions`, transaction)
+}
+
+
+// END TRANSACTIONS
