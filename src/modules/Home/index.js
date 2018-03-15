@@ -8,6 +8,7 @@ import NavigationCheck from 'material-ui-icons/Check';
 import IconButton from 'material-ui/IconButton';
 import Button from 'material-ui/Button';
 import ActionHome from 'material-ui-icons/Home';
+import Paper from 'material-ui/Paper';
 
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
 import { fetchTablesIfNeeded } from '../../actions/tableActions'
@@ -95,8 +96,8 @@ class Home extends React.Component {
   decreaseQty = (item) => {
     const { orders } = this.state
     item.quantity -= 1
-    if (item.quantity === 0) {
-      const removeIndex = orders.map((item) => item.id).indexOf(item.id);
+    if (item.quantity <= 0) {
+      const removeIndex = orders.findIndex(i => i.product_id === item.product_id)
       orders.splice(removeIndex, 1)
     }
     this.setState({
@@ -136,7 +137,27 @@ class Home extends React.Component {
           <Button onClick={() => this.handleMenu(true)}>Menu</Button>
         </Toolbar>
       </AppBar>
-      <div className="main bg"></div>
+      <div className="main bg">
+        {
+          orders.length
+            ?
+            <section>
+              <Paper>
+                <Orders
+                  onAdd={this.increaseQty}
+                  onRemove={this.decreaseQty}
+                  items={orders} />
+
+                <Button variant="fab" onClick={this.submit} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
+                  <NavigationCheck />
+                </Button>
+
+              </Paper>
+            </section>
+            : null
+        }
+      </div>
+
       <TablePicker
         isOpen={this.state.isOpenTablePicker}
         onCloseModal={this.handleTablePicker}
@@ -148,23 +169,6 @@ class Home extends React.Component {
         onCloseModal={this.handleMenu}
         onClickItem={this.handleMenuItem}
         menu={menu} />
-
-      {
-        orders.length
-          ?
-          <div>
-            <Orders
-              onAdd={this.increaseQty}
-              onRemove={this.decreaseQty}
-              items={orders} />
-
-            <Button variant="fab" onClick={this.submit} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
-              <NavigationCheck />
-            </Button>
-
-          </div>
-          : null
-      }
 
 
     </div>
