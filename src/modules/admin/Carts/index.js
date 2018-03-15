@@ -1,9 +1,17 @@
 import React from "react";
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
-import { List, ListItem } from 'material-ui/List';
+import List, { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
+import Typography from 'material-ui/Typography';
+import Paper from 'material-ui/Paper';
+import Toolbar from 'material-ui/Toolbar';
+import AssignmentTurnedIn from 'material-ui-icons/AssignmentTurnedIn';
+import IconButton from 'material-ui/IconButton';
+
+
 
 import { getCarts } from '../../../actions/cartActions'
+
 
 class Carts extends React.Component {
   componentDidMount() {
@@ -15,14 +23,29 @@ class Carts extends React.Component {
   render() {
     const { carts } = this.props
     const mappedCarts = carts.items.map(item => {
-      console.log(item.customer.name)
-      return <ListItem key={item.id} primaryText={item.customer.name} onClick={() => this.handleItemClick(item)} />
+      return <ListItem button key={item.id} onClick={() => this.handleItemClick(item)} >
+        <ListItemText primary={item.customer.name} />
+        {
+          item.is_checkout && <ListItemSecondaryAction>
+            <IconButton aria-label="Comments">
+              <AssignmentTurnedIn />
+            </IconButton>
+          </ListItemSecondaryAction>
+
+        }
+
+      </ListItem>
     })
 
     return <div>
-      <List>
-        {mappedCarts}
-      </List>
+      <Toolbar>
+        <Typography variant="title">Open Carts</Typography>
+      </Toolbar>
+      <Paper>
+        <List component="nav">
+          {mappedCarts}
+        </List>
+      </Paper>
     </div>
   }
 }

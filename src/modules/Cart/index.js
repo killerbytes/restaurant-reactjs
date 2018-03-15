@@ -1,24 +1,18 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
-import Subheader from 'material-ui/Subheader';
-import io from 'socket.io-client'
-import {
-  Table,
-  TableBody,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
-import RaisedButton from 'material-ui/RaisedButton';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import AppBar from 'material-ui/AppBar';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import Typography from 'material-ui/Typography';
+import Toolbar from 'material-ui/Toolbar';
+import NavigationClose from 'material-ui-icons/Close';
 import IconButton from 'material-ui/IconButton';
-import FlatButton from 'material-ui/FlatButton';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import Button from 'material-ui/Button';
+import ContentAdd from 'material-ui-icons/Add';
+import Paper from 'material-ui/Paper';
 
 import { getTotals } from '../../utils'
-import { getCart, getCarts, updateCustomer } from '../../actions/cartActions'
+import { getCart, getCarts, moveCustomer, checkoutCart } from '../../actions/cartActions'
 import { saveTransaction } from '../../actions/transactionActions'
 import { fetchMenuIfNeeded } from '../../actions/menuActions'
 import { saveOrders } from '../../actions/orderActions'
@@ -28,7 +22,6 @@ import Menu from '../../components/Menu'
 import Orders from '../../components/Orders'
 import TablePicker from '../../components/TablePicker'
 
-const socket = io('http://localhost:8000')
 
 const getInitialState = () => {
   return {
@@ -55,21 +48,12 @@ class Cart extends React.Component {
   }
 
   checkout = () => {
-    console.log(this.props)
-    socket.emit('system_message', JSON.stringify({ type: 'CHECKOUT', payload: this.props.carts.item }));
+    const { checkoutCart, getCart, match: { params }, carts: { item } } = this.props
+    checkoutCart(item.id).then(res => {
+      getCart(params.id)
+    })
 
-    // const { carts } = this.props
 
-    // let transaction = {
-    //   amount: this.totalOrderAmount,
-    //   discount: 0,
-    //   total_amount: this.totalOrderAmount,
-    //   notes: 'test',
-    //   cart_id: carts.item.id,
-    //   user_id: 2
-    // }
-
-    // this.props.saveTransaction(transaction)
   }
 
   increaseQty = (item) => {
@@ -97,7 +81,7 @@ class Cart extends React.Component {
   handleTableItem = (item) => {
     const { carts, match: { params } } = this.props
     const { name, id } = item
-    this.props.updateCustomer({
+    this.props.moveCustomer({
       id: carts.item.id,
       name: name,
       table_id: id
@@ -146,63 +130,90 @@ class Cart extends React.Component {
     const item = carts.item
     const total = getTotals(item.orders)
     const mappedOrders = item.orders.map(item => {
-      return <TableRow key={item.id} displayBorder={false} hoverable={true} selectable={false}>
-        <TableRowColumn style={{ whiteSpace: 'normal' }}>{item.product.name}</TableRowColumn>
-        <TableRowColumn style={{ width: 70, textAlign: 'right' }}>{item.quantity}</TableRowColumn>
-        <TableRowColumn style={{ width: 70, textAlign: 'right' }}>{parseFloat(item.price).toFixed(2)}</TableRowColumn>
-        <TableRowColumn style={{ width: 70, textAlign: 'right' }}>{(item.quantity * item.price).toFixed(2)}</TableRowColumn>
+      return <TableRow key={item.id}>
+        <TableCell style={{ whiteSpace: 'normal' }}>{item.product.name}</TableCell>
+        <TableCell style={{ width: 70, textAlign: 'right' }}>{item.quantity}</TableCell>
+        <TableCell style={{ width: 70, textAlign: 'right' }}>{parseFloat(item.price).toFixed(2)}</TableCell>
+        <TableCell style={{ width: 70, textAlign: 'right' }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
       </TableRow>
     })
 
-    return <div>
-      <AppBar
-        title={item && item.customer.name}
-        onTitleClick={() => this.handleTablePicker(true)}
-        iconElementLeft={<IconButton onClick={() => this.props.history.push('/')}><NavigationClose /></IconButton>}
-        iconElementRight={<FlatButton label="Add Orders" onClick={() => this.handleMenu(true)} />} />
-      <Table>
-        <TableBody displayRowCheckbox={false}>
-          {mappedOrders}
-          <TableRow>
-            <TableRowColumn />
-            <TableRowColumn />
-            <TableRowColumn style={{ textAlign: 'right', fontWeight: 'bold' }}>Total</TableRowColumn>
-            <TableRowColumn style={{ width: 70, textAlign: 'right', fontWeight: 'bold' }}>{total.amount_due.toFixed(2)}</TableRowColumn>
-          </TableRow>
+    return <div className="container">
+      <AppBar>
+        <Toolbar>
+          <IconButton onClick={() => this.props.history.push('/')}><NavigationClose /></IconButton>
+          <Typography onClick={() => this.handleTablePicker(true)} variant="title" style={{ flex: 1 }}>{item && item.customer.name}</Typography>
+          <Button variant="raised" color="secondary" disabled={item.is_checkout} onClick={this.checkout}>Checkout</Button>
+        </Toolbar>
+      </AppBar>
+      <div className="main">
+        <section>
 
-        </TableBody>
-      </Table>
+          <Paper className="mb">
+            <Toolbar>
+              <Typography variant="subheading">Orders</Typography>
+            </Toolbar>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Order</TableCell>
+                  <TableCell numeric>Quantity</TableCell>
+                  <TableCell numeric>Unit Price</TableCell>
+                  <TableCell numeric>Total</TableCell>
+                </TableRow>
+              </TableHead>
 
-      {orders.length
-        ?
-        <div>
-          <Subheader>Add Orders</Subheader>
-          <Orders
-            onAdd={this.increaseQty}
-            onRemove={this.decreaseQty}
-            items={orders} />
-          <RaisedButton label="Order" onClick={this.handleAdditionalOrders} />
-        </div>
-        :
-        (null)
-      }
+              <TableBody>
+                {mappedOrders}
+                <TableRow>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell style={{ textAlign: 'right', fontWeight: 'bold' }}>Total</TableCell>
+                  <TableCell style={{ width: 70, textAlign: 'right', fontWeight: 'bold' }}>{total.amount_due.toFixed(2)}</TableCell>
+                </TableRow>
 
-      {menu && <Menu
-        isOpen={this.state.isOpenMenu}
-        onCloseModal={this.handleMenu}
-        onClickItem={this.handleMenuItem}
-        menu={menu} />}
+              </TableBody>
+            </Table>
+          </Paper>
 
-      <TablePicker
-        isOpen={this.state.isOpenTablePicker}
-        onCloseModal={this.handleTablePicker}
-        onClickItem={this.handleTableItem}
-        carts={carts}
-        tables={tables} />
+          {orders.length
+            ?
+            <div>
+              <Paper className="mb">
+                <Toolbar>
+                  <Typography variant="subheading">Additional Orders</Typography>
+                </Toolbar>
+                <Orders
+                  onAdd={this.increaseQty}
+                  onRemove={this.decreaseQty}
+                  items={orders} />
+              </Paper>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button color="secondary" variant="raised" onClick={this.handleAdditionalOrders}>Add Order</Button>
+              </div>
+            </div>
+            :
+            (null)
+          }
 
-      <FloatingActionButton onClick={this.checkout} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
-        <ContentAdd />
-      </FloatingActionButton>
+          {menu && <Menu
+            isOpen={this.state.isOpenMenu}
+            onCloseModal={this.handleMenu}
+            onClickItem={this.handleMenuItem}
+            menu={menu} />}
+
+          <TablePicker
+            isOpen={this.state.isOpenTablePicker}
+            onCloseModal={this.handleTablePicker}
+            onClickItem={this.handleTableItem}
+            carts={carts}
+            tables={tables} />
+
+          <Button variant="fab" onClick={() => this.handleMenu(true)} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
+            <ContentAdd />
+          </Button>
+        </section>
+      </div>
 
     </div>
   }
@@ -212,7 +223,8 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators({
     getCart,
     getCarts,
-    updateCustomer,
+    moveCustomer,
+    checkoutCart,
     fetchMenuIfNeeded,
     fetchTablesIfNeeded,
     saveTransaction,

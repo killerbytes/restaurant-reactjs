@@ -1,15 +1,14 @@
 import React from "react";
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
-import { Link } from 'react-router-dom'
-import AppBar from 'material-ui/AppBar';
-import {
-  Table,
-  TableBody,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+import { format } from 'date-fns'
+import currency from 'currency.js'
 
+import Paper from 'material-ui/Paper';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+
+
+import Box from '../../../components/Box'
 import { getTransactions } from '../../../actions/transactionActions'
 import { getTransactionTotals } from '../../../utils/index'
 
@@ -17,31 +16,44 @@ class Transactions extends React.Component {
   componentDidMount() {
     this.props.getTransactions()
   }
+  navigate = (item) => {
+    this.props.history.push(`/admin/transactions/${item.id}`)
+  }
   render() {
     const { transaction: { items } } = this.props
     const total = getTransactionTotals(items)
     const mappedOrders = items.map(item => {
-      return <TableRow key={item.id} displayBorder={false} hoverable={true} selectable={false}>
-        <TableRowColumn style={{ whiteSpace: 'normal' }}><Link to={`/admin/transactions/${item.id}`}>{item.cart.customer.name}</Link></TableRowColumn>
-        <TableRowColumn style={{ width: 70, textAlign: 'right' }}>{item.user.name}</TableRowColumn>
-        <TableRowColumn style={{ width: 70, textAlign: 'right' }}>{item.total_amount_due}</TableRowColumn>
+      return <TableRow key={item.id} hover onClick={() => this.navigate(item)}>
+        <TableCell style={{ whiteSpace: 'normal' }}>{item.cart.customer.name}</TableCell>
+        <TableCell style={{ width: 150 }}>{format(item.created_at, 'YY-MM-DD h:mm:ss A')}</TableCell>
+        <TableCell style={{ width: 70 }}>{item.user.name}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{currency(item.total_amount_due).format()}</TableCell>
       </TableRow>
     })
 
     return <div>
-      <AppBar title="Transactions" />
-      <Table>
-        <TableBody displayRowCheckbox={false}>
-          {mappedOrders}
-          <TableRow>
-            <TableRowColumn />
-            <TableRowColumn />
-            <TableRowColumn style={{ textAlign: 'right', fontWeight: 'bold' }}>Total</TableRowColumn>
-            <TableRowColumn style={{ width: 70, textAlign: 'right', fontWeight: 'bold' }}>{total.total_amount_due}</TableRowColumn>
-          </TableRow>
+      <h1>Transactions</h1>
+      <Paper className="mb">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Cashier</TableCell>
+              <TableCell numeric>Amount</TableCell>
+            </TableRow>
+          </TableHead>
 
-        </TableBody>
-      </Table>
+          <TableBody>
+            {mappedOrders}
+
+          </TableBody>
+        </Table>
+      </Paper>
+      <Box>
+        <label htmlFor="">Total</label>
+        <strong>{currency(total.total_amount_due).format()}</strong>
+      </Box>
 
     </div>
   }

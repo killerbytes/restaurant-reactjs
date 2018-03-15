@@ -9,7 +9,7 @@ import {
 
 export default function reducer(
   state = {
-    loading: false, items: [], item: { orders: [], customer: {} }
+    loading: false, items: [], item: { orders: [], void: [], customer: {} }
   },
   action
 ) {

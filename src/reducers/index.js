@@ -7,6 +7,7 @@ import menu from "./menu";
 import carts from "./cart";
 import orders from "./order";
 import transaction from "./transaction";
+import navigation from "./navigation";
 
 export default combineReducers({
   user,
@@ -15,5 +16,6 @@ export default combineReducers({
   menu,
   carts,
   orders,
-  transaction
+  transaction,
+  navigation
 });

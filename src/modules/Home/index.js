@@ -2,11 +2,12 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
 import AppBar from 'material-ui/AppBar';
-import NavigationCheck from 'material-ui/svg-icons/navigation/check';
+import Toolbar from 'material-ui/Toolbar';
+import Typography from 'material-ui/Typography';
+import NavigationCheck from 'material-ui-icons/Check';
 import IconButton from 'material-ui/IconButton';
-import FlatButton from 'material-ui/FlatButton';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ActionHome from 'material-ui/svg-icons/action/home';
+import Button from 'material-ui/Button';
+import ActionHome from 'material-ui-icons/Home';
 
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
 import { fetchTablesIfNeeded } from '../../actions/tableActions'
@@ -20,7 +21,7 @@ import Orders from '../../components/Orders'
 const getInitialState = () => {
   return {
     isOpenMenu: false,
-    isOpenTablePicker: false,
+    isOpenTablePicker: true,
     table: {},
     orders: []
   }
@@ -39,6 +40,7 @@ class Home extends React.Component {
   handleTableItem = (item) => {
     this.handleMenu(true)
   }
+
   handleMenu = (isOpenMenu = false) => {
     this.setState({ isOpenMenu })
   }
@@ -114,7 +116,7 @@ class Home extends React.Component {
       orders
     }
     this.props.saveCart(cart).then(res => {
-      this.props.fetchCarts()
+      this.props.getCarts()
       this.setState(getInitialState())
     })
   }
@@ -122,12 +124,19 @@ class Home extends React.Component {
   render() {
     const { tables, carts, menu } = this.props
     const { table, orders } = this.state
-    return <div>
-      <AppBar
-        title={table.name || 'Orders'}
-        iconElementLeft={<IconButton onClick={() => this.handleTablePicker(true)}><ActionHome /></IconButton>}
-        iconElementRight={<FlatButton label="Menu" onClick={() => this.handleMenu(true)} />} />
-
+    return <div className="container">
+      <AppBar>
+        <Toolbar>
+          <IconButton onClick={() => this.handleTablePicker(true)} color="inherit" aria-label="Menu">
+            <ActionHome />
+          </IconButton>
+          <Typography variant="title" style={{ flex: 1 }}>
+            {table.name || 'Orders'}
+          </Typography>
+          <Button onClick={() => this.handleMenu(true)}>Menu</Button>
+        </Toolbar>
+      </AppBar>
+      <div className="main bg"></div>
       <TablePicker
         isOpen={this.state.isOpenTablePicker}
         onCloseModal={this.handleTablePicker}
@@ -149,9 +158,9 @@ class Home extends React.Component {
               onRemove={this.decreaseQty}
               items={orders} />
 
-            <FloatingActionButton onClick={this.submit} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
+            <Button variant="fab" onClick={this.submit} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
               <NavigationCheck />
-            </FloatingActionButton>
+            </Button>
 
           </div>
           : null

@@ -28,11 +28,16 @@ export function createCart(cart) {
   return axios.post(`${url.api}/api/carts`, cart)
 }
 
-export function changeCustomer(item) {
-  const { id, table_id, name } = item
+export function changeCustomer(cart) {
+  const { id, table_id, name } = cart
   return axios.patch(`${url.api}/api/carts/${id}/customer`, {
     table_id,
     name
+  })
+}
+export function checkout(id) {
+  return axios.patch(`${url.api}/api/carts/${id}`, {
+    is_checkout: true
   })
 }
 // END CARTS
@@ -40,6 +45,13 @@ export function changeCustomer(item) {
 // START ORDERS
 export function fetchOrders() {
   return axios.get(`${url.api}/api/orders`)
+}
+
+export function voidOrder(cart_id, order_id, quantity) {
+  return axios.patch(`${url.api}/api/orders/${order_id}/void`, {
+    cart_id,
+    quantity
+  })
 }
 
 export function createOrders(orders, cart_id) {

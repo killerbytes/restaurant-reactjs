@@ -1,4 +1,4 @@
-import { fetchCart, fetchCarts, createCart, changeCustomer } from '../utils/api';
+import { fetchCart, fetchCarts, createCart, changeCustomer, checkout } from '../utils/api';
 
 export const FETCH_CART = "FETCH_CART"
 export const FETCH_CART_FULFILLED = "FETCH_CART_FULFILLED"
@@ -7,6 +7,7 @@ export const FETCH_CARTS_FULFILLED = "FETCH_CARTS_FULFILLED"
 export const SAVE_CART = "SAVE_CART"
 export const SAVE_CART_FULFILLED = "SAVE_CART_FULFILLED"
 export const SAVE_CHANGE_CUSTOMER_FULFILLED = "SAVE_CHANGE_CUSTOMER_FULFILLED"
+export const CHECKOUT_CART_FULFILLED = "CHECKOUT_CART_FULFILLED"
 
 
 
@@ -37,7 +38,7 @@ export function getCarts() {
   }
 }
 
-export function updateCustomer(item) {
+export function moveCustomer(item) {
   return function (dispatch) {
 
     return changeCustomer(item).then(res => {
@@ -45,6 +46,17 @@ export function updateCustomer(item) {
         type: SAVE_CHANGE_CUSTOMER_FULFILLED,
         payload: res
       });
+    })
+  }
+}
+
+export function checkoutCart(id) {
+  return function (dispatch) {
+    return checkout(id).then(res => {
+      return dispatch({
+        type: CHECKOUT_CART_FULFILLED,
+        payload: res
+      })
     })
   }
 }
