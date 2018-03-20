@@ -1,19 +1,17 @@
 import {
-  FETCH_CARTS_FULFILLED
+  SAVE_TRANSACTION_FAILED
 } from "../constants/actionTypes";
 
 export default function reducer(
   state = {
-    carts: {
-      items: []
-    }
+    message: ""
   },
   action
 ) {
 
   switch (action.type) {
-    case FETCH_CARTS_FULFILLED: {
-      return { ...state, carts: action.payload.data };
+    case SAVE_TRANSACTION_FAILED: {
+      return { ...state, message: action.payload };
     }
     default:
       return state;

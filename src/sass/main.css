@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto");
 body {
-  font-family: 'Roboto', sans-serif;
-  margin: 0; }
+  font-family: 'Roboto', sans-serif; }
 
 .mb {
   margin-bottom: 1rem; }
@@ -47,3 +46,9 @@ a {
 
 input[type=number] {
   text-align: right; }
+
+.pending {
+  color: #CCC; }
+
+.ready {
+  color: green; }

@@ -1,7 +1,7 @@
 import {
   FETCH_TABLES,
   FETCH_TABLES_FULFILLED
-} from "../actions/tableActions";
+} from "../constants/actionTypes";
 
 export default function reducer(
   state = {

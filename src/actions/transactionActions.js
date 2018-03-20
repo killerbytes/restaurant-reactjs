@@ -1,16 +1,17 @@
-import { createTransaction, fetchTransaction, fetchTransactions } from '../utils/api';
+import * as api from '../utils/api';
 
-export const SAVE_TRANSACTION = "SAVE_TRANSACTION"
-export const SAVE_TRANSACTION_FULFILLED = "SAVE_TRANSACTION_FULFILLED"
-export const FETCH_TRANSACTION = "FETCH_TRANSACTION"
-export const FETCH_TRANSACTION_FULFILLED = "FETCH_TRANSACTION_FULFILLED"
-export const FETCH_TRANSACTIONS = "FETCH_TRANSACTIONS"
-export const FETCH_TRANSACTIONS_FULFILLED = "FETCH_TRANSACTIONS_FULFILLED"
+import {
+  SAVE_TRANSACTION,
+  SAVE_TRANSACTION_FULFILLED,
+  SAVE_TRANSACTION_FAILED,
+  FETCH_TRANSACTION_FULFILLED,
+  FETCH_TRANSACTIONS_FULFILLED
+} from '../constants/actionTypes'
 
-export function getTransaction(id) {
+export function fetchTransaction(id) {
   return function (dispatch) {
 
-    return fetchTransaction(id)
+    return api.fetchTransaction(id)
       .then(res => {
         return dispatch({
           type: FETCH_TRANSACTION_FULFILLED,
@@ -22,10 +23,10 @@ export function getTransaction(id) {
   }
 }
 
-export function getTransactions() {
+export function fetchTransactions() {
   return function (dispatch) {
 
-    return fetchTransactions().then(res => {
+    return api.fetchTransactions().then(res => {
       return dispatch({
         type: FETCH_TRANSACTIONS_FULFILLED,
         payload: res
@@ -34,15 +35,21 @@ export function getTransactions() {
   }
 }
 
-export function saveTransaction(transaction) {
+export function createTransaction(transaction) {
   return function (dispatch) {
     dispatch({ type: SAVE_TRANSACTION })
-    return createTransaction(transaction).then(res => {
-      return dispatch({
-        type: SAVE_TRANSACTION_FULFILLED,
-        payload: res
-      });
-    })
+    return api.createTransaction(transaction)
+      .then(res => {
+        return dispatch({
+          type: SAVE_TRANSACTION_FULFILLED,
+          payload: res
+        });
+      }, err => {
+        return dispatch({
+          type: SAVE_TRANSACTION_FAILED,
+          payload: err.message || 'Something went wrong'
+        })
+      })
   }
 }
 

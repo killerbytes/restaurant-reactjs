@@ -1,7 +1,7 @@
 import {
   FETCH_ORDERS,
   FETCH_ORDERS_FULFILLED
-} from "../actions/orderActions";
+} from "../constants/actionTypes";
 
 export default function reducer(
   state = {

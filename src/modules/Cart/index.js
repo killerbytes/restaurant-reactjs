@@ -1,6 +1,8 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
+import { format } from 'date-fns'
+
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import AppBar from 'material-ui/AppBar';
 import Typography from 'material-ui/Typography';
@@ -8,25 +10,33 @@ import Toolbar from 'material-ui/Toolbar';
 import NavigationClose from 'material-ui-icons/Close';
 import IconButton from 'material-ui/IconButton';
 import Button from 'material-ui/Button';
+import Place from 'material-ui-icons/Place';
 import ContentAdd from 'material-ui-icons/Add';
 import Paper from 'material-ui/Paper';
+import CheckIcon from 'material-ui-icons/Check';
+import CheckCircleIcon from 'material-ui-icons/CheckCircle';
 
 import { getTotals } from '../../utils'
 import { getCart, getCarts, moveCustomer, checkoutCart } from '../../actions/cartActions'
-import { saveTransaction } from '../../actions/transactionActions'
+import { createTransaction } from '../../actions/transactionActions'
 import { fetchMenuIfNeeded } from '../../actions/menuActions'
-import { saveOrders } from '../../actions/orderActions'
+import { saveOrders, saveOrderStatus } from '../../actions/orderActions'
 import { fetchTablesIfNeeded } from '../../actions/tableActions'
 
 import Menu from '../../components/Menu'
 import Orders from '../../components/Orders'
 import TablePicker from '../../components/TablePicker'
+import Box from '../../components/Box'
+
+import { url } from '../../constants/config'
+import io from 'socket.io-client'
+const socket = io(url.api)
 
 
 const getInitialState = () => {
   return {
-    isOpenMenu: false,
-    isOpenTablePicker: false,
+    menu_dialog: false,
+    table_dialog: false,
     table: {},
     orders: []
   }
@@ -36,6 +46,19 @@ class Cart extends React.Component {
   constructor(props) {
     super(props)
     this.state = getInitialState()
+
+    const { match: { params } } = props
+    socket.on('server_message', action => {
+      switch (action.type) {
+        case 'GET_CART':
+          props.getCart(params.id)
+          break;
+        default:
+          break;
+      }
+    })
+
+
   }
   componentDidMount() {
     const { match: { params } } = this.props
@@ -48,12 +71,8 @@ class Cart extends React.Component {
   }
 
   checkout = () => {
-    const { checkoutCart, getCart, match: { params }, carts: { item } } = this.props
-    checkoutCart(item.id).then(res => {
-      getCart(params.id)
-    })
-
-
+    const { match: { params }, checkoutCart, carts: { item } } = this.props
+    checkoutCart(item[params.id].id)
   }
 
   increaseQty = (item) => {
@@ -75,27 +94,19 @@ class Cart extends React.Component {
       orders
     })
   }
-  handleTablePicker = (isOpenTablePicker = false) => {
-    this.setState({ isOpenTablePicker })
-  }
   handleTableItem = (item) => {
     const { carts, match: { params } } = this.props
     const { name, id } = item
     this.props.moveCustomer({
-      id: carts.item.id,
+      id: carts.item[params.id].id,
       name: name,
       table_id: id
-    }).then(res => {
-      this.props.fetchTablesIfNeeded()
-      this.props.getCarts()
-      this.props.getCart(params.id)
-      this.handleTablePicker()
-
     })
+    this.handleDialog('table_dialog')
   }
 
-  handleMenu = (isOpenMenu = false) => {
-    this.setState({ isOpenMenu })
+  handleDialog = (key, open = false) => {
+    this.setState({ [key]: open })
   }
 
   handleMenuItem = (item) => {
@@ -116,25 +127,41 @@ class Cart extends React.Component {
 
   handleAdditionalOrders = () => {
     const { orders } = this.state
-    const { carts: { item } } = this.props
-    this.props.saveOrders(orders, item.id)
-      .then(res => {
-        this.props.getCart(item.id)
-        this.setState(getInitialState())
-      })
+    const { match: { params }, carts: { item } } = this.props
+    this.props.saveOrders(orders, item[params.id].id)
+    this.setState(getInitialState())
+  }
+
+  handleReadyClick = (item) => {
+    this.props.saveOrderStatus(item.id, 'complete')
   }
 
   render() {
-    const { carts, menu, tables } = this.props
+    const { carts, menu, tables, match: { params } } = this.props
     const { orders } = this.state
-    const item = carts.item
+    const item = carts.item && carts.item[params.id]
+    if (!item) return false
     const total = getTotals(item.orders)
     const mappedOrders = item.orders.map(item => {
+      const getStatus = () => {
+        switch (item.status) {
+          case 'ready':
+            return <IconButton onClick={() => { this.handleReadyClick(item) }}><CheckIcon className={item.status}></CheckIcon></IconButton>
+          case 'complete':
+            return <IconButton disabled><CheckCircleIcon color="disabled" className={item.status}></CheckCircleIcon></IconButton>
+          default:
+            break;
+        }
+
+        return null
+      }
       return <TableRow key={item.id}>
         <TableCell style={{ whiteSpace: 'normal' }}>{item.product.name}</TableCell>
-        <TableCell style={{ width: 70, textAlign: 'right' }}>{item.quantity}</TableCell>
-        <TableCell style={{ width: 70, textAlign: 'right' }}>{parseFloat(item.price).toFixed(2)}</TableCell>
-        <TableCell style={{ width: 70, textAlign: 'right' }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
+        <TableCell padding="none">{getStatus()}</TableCell>
+        <TableCell numeric>{format(item.created_at, 'h:mm:ss A')}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{item.quantity}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{parseFloat(item.price).toFixed(2)}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
       </TableRow>
     })
 
@@ -142,8 +169,11 @@ class Cart extends React.Component {
       <AppBar>
         <Toolbar>
           <IconButton onClick={() => this.props.history.push('/')}><NavigationClose /></IconButton>
-          <Typography onClick={() => this.handleTablePicker(true)} variant="title" style={{ flex: 1 }}>{item && item.customer.name}</Typography>
-          <Button variant="raised" color="secondary" disabled={item.is_checkout} onClick={this.checkout}>Checkout</Button>
+          <Typography variant="title">{item && item.customer.name}</Typography>
+          <IconButton onClick={() => this.handleDialog('table_dialog', true)}>
+            <Place />
+          </IconButton>
+          <Button variant="raised" color="secondary" disabled={item.is_checkout} onClick={this.checkout} style={{ marginLeft: 'auto' }} >Checkout</Button>
         </Toolbar>
       </AppBar>
       <div className="main">
@@ -157,6 +187,8 @@ class Cart extends React.Component {
               <TableHead>
                 <TableRow>
                   <TableCell>Order</TableCell>
+                  <TableCell padding="none">Status</TableCell>
+                  <TableCell numeric>Time</TableCell>
                   <TableCell numeric>Quantity</TableCell>
                   <TableCell numeric>Unit Price</TableCell>
                   <TableCell numeric>Total</TableCell>
@@ -165,21 +197,20 @@ class Cart extends React.Component {
 
               <TableBody>
                 {mappedOrders}
-                <TableRow>
-                  <TableCell />
-                  <TableCell />
-                  <TableCell style={{ textAlign: 'right', fontWeight: 'bold' }}>Total</TableCell>
-                  <TableCell style={{ width: 70, textAlign: 'right', fontWeight: 'bold' }}>{total.amount_due.toFixed(2)}</TableCell>
-                </TableRow>
 
               </TableBody>
             </Table>
           </Paper>
+          <Box style={{ float: 'right' }}>
+            Subtotal
+            <Typography variant="title" style={{ marginLeft: '3rem' }}>{total.amount_due.toFixed(2)}</Typography>
+          </Box>
+          <div style={{ clear: 'both' }}></div>
 
-          {orders.length
-            ?
-            <div>
-              <Paper className="mb">
+          {
+            orders.length
+              ?
+              <div>
                 <Toolbar>
                   <Typography variant="subheading">Additional Orders</Typography>
                 </Toolbar>
@@ -187,31 +218,34 @@ class Cart extends React.Component {
                   onAdd={this.increaseQty}
                   onRemove={this.decreaseQty}
                   items={orders} />
-              </Paper>
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button color="secondary" variant="raised" onClick={this.handleAdditionalOrders}>Add Order</Button>
+                <div style={{ float: 'right' }}>
+                  <Button color="secondary" variant="raised" onClick={this.handleAdditionalOrders}>Add Order</Button>
+                </div>
               </div>
-            </div>
-            :
-            (null)
+              :
+              (null)
           }
 
-          {menu && <Menu
-            isOpen={this.state.isOpenMenu}
-            onCloseModal={this.handleMenu}
-            onClickItem={this.handleMenuItem}
-            menu={menu} />}
+          {
+            <Menu
+              isOpen={this.state.menu_dialog}
+              onCloseModal={() => this.handleDialog('menu_dialog')}
+              onClickItem={this.handleMenuItem}
+              menu={menu} />
+          }
 
           <TablePicker
-            isOpen={this.state.isOpenTablePicker}
-            onCloseModal={this.handleTablePicker}
+            disableActive
+            isOpen={this.state.table_dialog}
+            onCloseModal={() => this.handleDialog('table_dialog')}
             onClickItem={this.handleTableItem}
             carts={carts}
             tables={tables} />
 
-          <Button variant="fab" onClick={() => this.handleMenu(true)} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
+          <Button variant="fab" disabled={item.is_checkout} onClick={() => this.handleDialog('menu_dialog', true)} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
             <ContentAdd />
           </Button>
+          <div style={{ marginTop: '5rem' }}></div>
         </section>
       </div>
 
@@ -227,8 +261,9 @@ const mapDispatchToProps = dispatch => {
     checkoutCart,
     fetchMenuIfNeeded,
     fetchTablesIfNeeded,
-    saveTransaction,
-    saveOrders
+    createTransaction,
+    saveOrders,
+    saveOrderStatus
   }, dispatch)
 };
 

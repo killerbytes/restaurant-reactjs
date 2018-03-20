@@ -5,7 +5,7 @@ import {
   FETCH_TRANSACTION_FULFILLED,
   FETCH_TRANSACTIONS,
   FETCH_TRANSACTIONS_FULFILLED
-} from "../actions/transactionActions";
+} from "../constants/actionTypes";
 
 export default function reducer(
   state = {

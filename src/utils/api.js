@@ -47,7 +47,13 @@ export function fetchOrders() {
   return axios.get(`${url.api}/api/orders`)
 }
 
-export function voidOrder(cart_id, order_id, quantity) {
+export function updateOrderStatus(order_id, status) {
+  return axios.patch(`${url.api}/api/orders/${order_id}/status`, {
+    status
+  })
+}
+
+export function createOrderVoid(cart_id, order_id, quantity) {
   return axios.patch(`${url.api}/api/orders/${order_id}/void`, {
     cart_id,
     quantity

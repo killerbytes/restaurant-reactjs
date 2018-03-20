@@ -1,7 +1,7 @@
 import {
   FETCH_CATEGORIES,
   FETCH_CATEGORIES_FULFILLED
-} from "../actions/categoryActions";
+} from "../constants/actionTypes";
 
 export default function reducer(
   state = {

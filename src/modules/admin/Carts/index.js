@@ -22,7 +22,22 @@ class Carts extends React.Component {
   }
   render() {
     const { carts } = this.props
-    const mappedCarts = carts.items.map(item => {
+    const mappedCarts = !!carts.items.length && carts.items.filter(item => item.table_id).map(item => {
+      return <ListItem button key={item.id} onClick={() => this.handleItemClick(item)} >
+        <ListItemText primary={item.customer.name} />
+        {
+          item.is_checkout && <ListItemSecondaryAction>
+            <IconButton aria-label="Comments">
+              <AssignmentTurnedIn />
+            </IconButton>
+          </ListItemSecondaryAction>
+
+        }
+
+      </ListItem>
+    })
+
+    const mappedCustom = !!carts.items.length && carts.items.filter(item => !item.table_id).map(item => {
       return <ListItem button key={item.id} onClick={() => this.handleItemClick(item)} >
         <ListItemText primary={item.customer.name} />
         {
@@ -41,11 +56,23 @@ class Carts extends React.Component {
       <Toolbar>
         <Typography variant="title">Open Carts</Typography>
       </Toolbar>
-      <Paper>
-        <List component="nav">
-          {mappedCarts}
-        </List>
-      </Paper>
+      {
+        mappedCarts && <Paper>
+          <List component="nav">
+            {mappedCarts}
+          </List>
+        </Paper>
+
+      }
+      {
+        mappedCustom && <Paper>
+          <List component="nav">
+            {mappedCustom}
+          </List>
+        </Paper>
+
+      }
+
     </div>
   }
 }

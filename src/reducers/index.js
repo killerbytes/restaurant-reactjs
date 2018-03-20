@@ -8,6 +8,8 @@ import carts from "./cart";
 import orders from "./order";
 import transaction from "./transaction";
 import navigation from "./navigation";
+import error from "./error";
+import common from "./common"
 
 export default combineReducers({
   user,
@@ -17,5 +19,7 @@ export default combineReducers({
   carts,
   orders,
   transaction,
-  navigation
+  navigation,
+  error,
+  common
 });

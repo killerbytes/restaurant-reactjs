@@ -1,6 +1,11 @@
 import React from "react";
-import { bindActionCreators } from 'redux'
+import { bindActionCreators, compose } from 'redux'
 import { connect } from "react-redux";
+import currency from 'currency.js'
+import { withStyles } from 'material-ui/styles';
+import { format } from 'date-fns'
+
+import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
@@ -8,22 +13,44 @@ import Typography from 'material-ui/Typography';
 import Toolbar from 'material-ui/Toolbar';
 import ButtonBase from 'material-ui/ButtonBase';
 import Button from 'material-ui/Button';
+import Grid from 'material-ui/Grid';
+import Delete from 'material-ui-icons/Delete';
+import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
+import Collapse from 'material-ui/transitions/Collapse';
+import ExpandLess from 'material-ui-icons/ExpandLess';
+import ExpandMore from 'material-ui-icons/ExpandMore';
 
-
-import Box from '../../../components/Box'
 import VoidOrder from '../../../components/VoidOrder'
+import ErrorMessage from '../../../components/ErrorMessage'
 import { getCart } from '../../../actions/cartActions'
-import { saveTransaction } from '../../../actions/transactionActions'
-import { updateOrder } from '../../../actions/orderActions'
+import { createTransaction } from '../../../actions/transactionActions'
+import { saveOrderVoid } from '../../../actions/orderActions'
 import { getTotals } from '../../../utils'
 
+const styles = theme => ({
+  root: {
+    padding: theme.spacing.unit * 2,
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column'
+  },
+  margin: {
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit,
+  }
+});
 
 class Carts extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      void_dialog: false,
+      discount_dialog: false,
+      void_collapse: false,
       amount: "",
-      open: false,
+      notes: "",
+      discount: 0,
+      order: {},
       voidQuantity: 0
     }
   }
@@ -31,98 +58,127 @@ class Carts extends React.Component {
     const { match: { params }, getCart } = this.props
     getCart(params.id)
   }
+  componentWillUpdate(nextProps) {
+    const { error } = nextProps
+    if (!error.message) {
+      // this.props.history.push('/admin/carts')
+    }
+
+  }
   handleItemClick = (item) => {
     this.props.history.push(`/admin/carts/${item.id}`)
   }
-  handleAmountChange = (e) => {
-    this.setState({
-      amount: e.target.value
-    })
+
+  handleTextChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value })
   }
+
+  handleDialog = (key, open = false) => {
+    this.setState({ [key]: open })
+  }
+
   handleCheckout = () => {
-    const { carts: { item } } = this.props
-    const total = getTotals(item.orders)
-
-    this.props.saveTransaction({
-      cart_id: item.id,
+    const { match: { params }, carts: { item } } = this.props
+    this.props.createTransaction({
+      cart_id: item[params.id].id,
       discount: 0,
-      total_price: total.amount_due,
       amount_paid: parseFloat(this.state.amount)
-    }).then(res => {
-      this.props.history.push('/admin/carts')
     })
 
   }
-  handleDialogOpen = (e, item) => {
-    this.setState({
-      open: true,
-      order: item
-    })
+
+
+  handleSetVoid = (order) => {
+    this.setState({ order })
+    this.handleDialog('void_dialog', true)
   }
 
-  handleDialogClose = () => {
-    this.setState({ open: false })
+  handleVoidCollapse = () => {
+    this.setState({ 'void_collapse': !this.state.void_collapse })
   }
 
-  handleVoidSubmit = () => {
-    const { match: { params }, updateOrder, getCart } = this.props
-    updateOrder(params.id, this.state.order.id, this.state.voidQuantity)
-      .then(res => {
-        getCart(params.id)
-        this.handleDialogClose()
-      })
+  handleVoidSubmit = (e) => {
+    const { match: { params }, saveOrderVoid } = this.props
+    const { order, voidQuantity } = this.state
+    const qty = parseInt(voidQuantity, 10)
+    if (qty >= 0) {
+
+      saveOrderVoid(params.id, order.id, qty)
+      this.setState({ voidQuantity: 0 })
+      this.handleDialog('void_dialog')
+    }
   }
 
-  handleVoidChange = (e) => {
-    this.setState({ voidQuantity: e.target.value })
+  handleApplyDiscount = (e) => {
+    e.preventDefault()
+    if (this.inputDiscount.value > 0) {
+      this.setState({ discount: this.inputDiscount.value })
+    }
+    this.handleDialog('discount_dialog')
   }
 
   render() {
-    const { carts: { item } } = this.props
-    const { orders } = item
+    const { carts, error, classes, match: { params } } = this.props
+    const { discount, amount } = this.state
+    const cart = carts.item && carts.item[params.id]
+    if (!cart) return false
+    const { orders } = cart
     const total = getTotals(orders)
-
-    const change = this.state.amount - total.amount_due
-    console.log(change)
-
-    const mappedOrders = item.orders.map(item => {
+    const subtotal = parseFloat(total.amount_due) - parseFloat(discount) || 0
+    const change = parseFloat(amount) - parseFloat(subtotal) > 0 ? currency(amount).subtract(subtotal).format() : ""
+    const mappedOrders = cart.orders.map(item => {
       return <TableRow key={item.id}>
-        <TableCell style={{ whiteSpace: 'normal' }}><ButtonBase onClick={(e) => this.handleDialogOpen(e, item)}>{item.product.name}</ButtonBase></TableCell>
-        <TableCell style={{ width: 70, textAlign: 'right' }}>{item.quantity}</TableCell>
-        <TableCell style={{ width: 70, textAlign: 'right' }}>{parseFloat(item.price).toFixed(2)}</TableCell>
-        <TableCell style={{ width: 70, textAlign: 'right' }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
+        <TableCell style={{ whiteSpace: 'normal' }}><ButtonBase onClick={() => this.handleSetVoid(item)}>{item.product.name}</ButtonBase></TableCell>
+        <TableCell>{item.user.name}</TableCell>
+        <TableCell numeric>{format(item.created_at, 'h:mm:ss A')}</TableCell>
+        <TableCell>{item.status}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{item.quantity}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{parseFloat(item.price).toFixed(2)}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
       </TableRow>
     })
 
-    const mappedVoid = !!item.void.length && item.void.map(item => {
+    const mappedVoid = !!cart.void.length && cart.void.map(item => {
       return <TableRow key={item.id}>
         <TableCell style={{ whiteSpace: 'normal' }}>{item.product.name}</TableCell>
-        <TableCell style={{ width: 70, textAlign: 'right' }}>{item.quantity}</TableCell>
-        <TableCell style={{ width: 70, textAlign: 'right' }}>{parseFloat(item.price).toFixed(2)}</TableCell>
-        <TableCell style={{ width: 70, textAlign: 'right' }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{item.quantity}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{parseFloat(item.price).toFixed(2)}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
       </TableRow>
     })
-    console.log(mappedVoid)
-
-
     return <div>
-      <h1>{item && item.customer.name}</h1>
+      <h1>{cart && cart.customer.name}</h1>
       <Toolbar>
         <Typography variant="subheading">Orders</Typography>
       </Toolbar>
+      <ErrorMessage message={error.message} />
       <Paper className="mb">
         {
           mappedOrders && <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Order</TableCell>
+                <TableCell>User</TableCell>
+                <TableCell numeric>Time</TableCell>
+                <TableCell>Status</TableCell>
                 <TableCell numeric>Quantity</TableCell>
                 <TableCell numeric>Unit Price</TableCell>
                 <TableCell numeric>Total</TableCell>
               </TableRow>
             </TableHead>
 
-            <TableBody>{mappedOrders}</TableBody>
+            <TableBody>
+              {mappedOrders}
+              {
+                !!discount && <TableRow key={cart.id}>
+                  <TableCell
+                    component={() => <td className="MuiTableCell-root-108 MuiTableCell-body-110" colSpan={6}>Discount<IconButton onClick={() => { this.setState({ discount: 0 }) }}><Delete style={{ fontSize: '1rem', marginTop: '-3px' }} /></IconButton></td>}>
+                  </TableCell>
+                  <TableCell numeric>{currency(discount).format()}</TableCell>
+                </TableRow>
+
+              }
+            </TableBody>
           </Table>
         }
       </Paper>
@@ -130,52 +186,112 @@ class Carts extends React.Component {
 
       {
         mappedVoid && <div>
+
           <Toolbar>
-            <Typography>Void</Typography>
+            <Typography >
+              Void
+            </Typography>
+            <IconButton onClick={() => this.handleVoidCollapse()}>
+              {this.state.open ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+
           </Toolbar>
-          <Paper className="mb">
-            <Table>
-              <TableBody>{mappedVoid}</TableBody>
-            </Table>
-          </Paper>
+          <Collapse in={this.state.void_collapse} timeout="auto" unmountOnExit>
+            <Paper className="mb">
+              <Table>
+                <TableBody>{mappedVoid}</TableBody>
+              </Table>
+            </Paper>
+          </Collapse>
+
         </div>
       }
 
-      <Box>
-        <label htmlFor="">Total</label>
-        <strong>{total.amount_due.toFixed(2)}</strong>
-      </Box>
 
-      <div className="mb" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Grid container spacing={0}>
+        <Grid item sm={9}>
+          <div></div>
+          <TextField
+            label="Notes"
+            name="notes"
+            multiline
+            value={this.state.notes}
+            onChange={(e) => this.handleTextChange(e)} />
 
-        <Paper style={{ padding: '1rem 1.5rem' }}>
-          <div className="mb">
-            <label htmlFor="" style={{ width: 200, display: 'inline-block' }}>Payment:</label>
-            <TextField
-              label="Amount"
-              type="number"
-              value={this.state.amount}
-              onChange={this.handleAmountChange} />
-          </div>
-          <div className="mb" style={{ display: 'flex' }}>
-            <label htmlFor="" style={{ width: 200, display: 'inline-block' }}>
-              Change:
-            </label>
-            <span style={{ marginLeft: 'auto', paddingRight: 14 }}>
-              {change >= 0 ? change : null}
-            </span>
-          </div>
-          <Button variant="raised" color="primary" style={{ float: 'right' }} onClick={this.handleCheckout} >Checkout</Button>
-        </Paper>
+        </Grid>
+        <Grid item sm={3}>
+          <Grid container spacing={0}>
+            <Paper style={{ flex: 1 }}>
+              <div className={classes.root}>
+                <div className="flex">
+                  Subtotal
+                  <Typography variant="title" style={{ float: 'right' }}>{currency(subtotal).format()}</Typography>
+                </div>
 
-      </div>
+                <TextField
+                  label="Amount"
+                  type="number"
+                  fullWidth
+                  className={classes.margin}
+                  inputProps={{ min: 0 }}
+                  value={this.state.amount}
+                  name="amount"
+                  onChange={(e) => this.handleTextChange(e)} />
+                <TextField
+                  label="Change"
+                  type="number"
+                  fullWidth
+                  disabled
+                  className={classes.margin}
+                  value={change} />
+
+
+                <div style={{ marginBottom: '1rem' }}></div>
+                <Button color="primary" style={{ marginBottom: '1rem' }} onClick={() => this.handleDialog('discount_dialog', true)}>
+                  Apply Discount
+                </Button>
+
+                <Button variant="raised" color="primary" style={{ float: 'right' }} onClick={this.handleCheckout} >Checkout</Button>
+              </div>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Grid>
+
 
       <VoidOrder
-        handleTextChange={this.handleVoidChange}
-        handleClose={() => this.handleDialogClose()}
-        handleSubmit={() => this.handleVoidSubmit()}
+        handleTextChange={this.handleTextChange}
+        handleClose={() => this.handleDialog('void_dialog')}
+        handleSubmit={this.handleVoidSubmit}
+        item={this.state.order}
         value={this.state.voidQuantity}
-        open={this.state.open} />
+        open={this.state.void_dialog} />
+
+      <Dialog
+        open={this.state.discount_dialog}
+        onClose={() => this.handleDialog('discount_dialog')} >
+        <form onSubmit={(e) => this.handleApplyDiscount(e, this)}>
+          <DialogTitle>Apply discount</DialogTitle>
+          <DialogContent>
+
+            <TextField
+              label="Discount"
+              type="number"
+              className={classes.margin}
+              inputProps={{ min: 0 }}
+              inputRef={(input) => this.inputDiscount = input}
+              defaultValue="" />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.handleDialog('discount_dialog')} color="primary">
+              Cancel
+            </Button>
+            <Button color="primary" type="submit">
+              Apply
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
 
     </div>
   }
@@ -184,18 +300,22 @@ class Carts extends React.Component {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
     getCart,
-    saveTransaction,
-    updateOrder
+    createTransaction,
+    saveOrderVoid
   }, dispatch)
 };
 
-const mapStateToProps = ({ carts }) => ({
-  carts
+const mapStateToProps = ({ carts, error }) => ({
+  carts,
+  error
 });
 
+withStyles(styles)(Carts)
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Carts);
+export default compose(
+  withStyles(styles),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ))(Carts);
 

@@ -1,7 +1,8 @@
 import { fetchCategories } from '../utils/api';
 
-export const FETCH_CATEGORIES = "FETCH_CATEGORIES"
-export const FETCH_CATEGORIES_FULFILLED = "FETCH_CATEGORIES_FULFILLED"
+import {
+  FETCH_CATEGORIES_FULFILLED
+} from '../constants/actionTypes'
 
 
 

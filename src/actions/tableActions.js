@@ -1,7 +1,8 @@
 import { fetchTables } from '../utils/api';
 
-export const FETCH_TABLES = "FETCH_TABLES"
-export const FETCH_TABLES_FULFILLED = "FETCH_TABLES_FULFILLED"
+import {
+  FETCH_TABLES_FULFILLED
+} from '../constants/actionTypes'
 
 
 function shouldFetchTables(state) {

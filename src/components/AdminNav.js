@@ -1,17 +1,15 @@
 import React from "react";
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
-import io from 'socket.io-client'
 
 import Paper from 'material-ui/Paper';
 import List, { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
-import StarBorder from 'material-ui-icons/StarBorder';
 import IconButton from 'material-ui/IconButton';
 import Badge from 'material-ui/Badge';
 
-import { url } from '../constants/config'
-import { updateCarts } from '../actions/navActions'
 import { getCarts } from '../actions/cartActions'
+import io from 'socket.io-client'
+import { url } from '../constants/config'
 const socket = io(url.api)
 
 
@@ -35,10 +33,8 @@ class AdminNav extends React.Component {
   render() {
     const { carts } = this.props.navigation
     const checkout = carts.items.filter(item => {
-      console.log(item)
       return item.is_checkout
     })
-    console.log(checkout)
     return <Paper className="nav">
       <List component="nav">
         <ListItem button>

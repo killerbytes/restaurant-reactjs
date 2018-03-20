@@ -8,12 +8,12 @@ import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import Box from '../../../components/Box'
-import { getTransaction } from '../../../actions/transactionActions'
+import { fetchTransaction } from '../../../actions/transactionActions'
 
 class Transactions extends React.Component {
   componentDidMount() {
     const { match: { params } } = this.props
-    this.props.getTransaction(params.id)
+    this.props.fetchTransaction(params.id)
   }
   render() {
     const { transaction: { item } } = this.props
@@ -74,7 +74,7 @@ class Transactions extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    getTransaction
+    fetchTransaction
   }, dispatch)
 };
 

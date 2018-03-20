@@ -8,7 +8,6 @@ import NavigationCheck from 'material-ui-icons/Check';
 import IconButton from 'material-ui/IconButton';
 import Button from 'material-ui/Button';
 import ActionHome from 'material-ui-icons/Home';
-import Paper from 'material-ui/Paper';
 
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
 import { fetchTablesIfNeeded } from '../../actions/tableActions'
@@ -19,10 +18,14 @@ import Menu from '../../components/Menu'
 import TablePicker from '../../components/TablePicker'
 import Orders from '../../components/Orders'
 
+import { url } from '../../constants/config'
+import io from 'socket.io-client'
+const socket = io(url.api)
+
 const getInitialState = () => {
   return {
-    isOpenMenu: false,
-    isOpenTablePicker: true,
+    menu_dialog: false,
+    table_dialog: true,
     table: {},
     orders: []
   }
@@ -31,6 +34,17 @@ class Home extends React.Component {
   constructor(props) {
     super(props)
     this.state = getInitialState()
+
+    socket.on('server_message', action => {
+      switch (action.type) {
+        case 'GET_CARTS':
+          props.getCarts()
+          break;
+        default:
+          break;
+      }
+    })
+
   }
   componentDidMount() {
     this.props.fetchCategoriesIfNeeded()
@@ -38,16 +52,9 @@ class Home extends React.Component {
     this.props.fetchMenuIfNeeded()
     this.props.getCarts()
   }
-  handleTableItem = (item) => {
-    this.handleMenu(true)
-  }
 
-  handleMenu = (isOpenMenu = false) => {
-    this.setState({ isOpenMenu })
-  }
-
-  handleTablePicker = (isOpenTablePicker = false) => {
-    this.setState({ isOpenTablePicker })
+  handleDialog = (key, open = false) => {
+    this.setState({ [key]: open })
   }
 
   handleMenuItem = (item) => {
@@ -79,9 +86,9 @@ class Home extends React.Component {
         table: item
       })
       if (!orders.length) {
-        this.handleMenu(true)
+        this.handleDialog('menu_dialog', true)
       }
-      this.handleTablePicker()
+      this.handleDialog('table_dialog')
     }
   }
 
@@ -108,7 +115,7 @@ class Home extends React.Component {
   submit = () => {
     const { orders, table } = this.state
     if (!table.name) {
-      this.handleTablePicker(true)
+      this.handleDialog('table_dialog', true)
       return false
     }
     const cart = {
@@ -116,10 +123,8 @@ class Home extends React.Component {
       table_id: table.id,
       orders
     }
-    this.props.saveCart(cart).then(res => {
-      this.props.getCarts()
-      this.setState(getInitialState())
-    })
+    this.props.saveCart(cart)
+    this.setState(getInitialState())
   }
 
   render() {
@@ -128,13 +133,13 @@ class Home extends React.Component {
     return <div className="container">
       <AppBar>
         <Toolbar>
-          <IconButton onClick={() => this.handleTablePicker(true)} color="inherit" aria-label="Menu">
+          <IconButton onClick={() => this.handleDialog('table_dialog', true)} color="inherit" aria-label="Menu">
             <ActionHome />
           </IconButton>
           <Typography variant="title" style={{ flex: 1 }}>
             {table.name || 'Orders'}
           </Typography>
-          <Button onClick={() => this.handleMenu(true)}>Menu</Button>
+          <Button onClick={() => this.handleDialog('menu_dialog', true)}>Menu</Button>
         </Toolbar>
       </AppBar>
       <div className="main bg">
@@ -142,31 +147,30 @@ class Home extends React.Component {
           orders.length
             ?
             <section>
-              <Paper>
-                <Orders
-                  onAdd={this.increaseQty}
-                  onRemove={this.decreaseQty}
-                  items={orders} />
+              <Orders
+                onAdd={this.increaseQty}
+                onRemove={this.decreaseQty}
+                items={orders} />
 
-                <Button variant="fab" onClick={this.submit} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
-                  <NavigationCheck />
-                </Button>
+              <Button variant="fab" onClick={this.submit} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
+                <NavigationCheck />
+              </Button>
 
-              </Paper>
             </section>
             : null
         }
       </div>
 
       <TablePicker
-        isOpen={this.state.isOpenTablePicker}
-        onCloseModal={this.handleTablePicker}
+        isOpen={this.state.table_dialog}
+        onCloseModal={() => this.handleDialog('table_dialog')}
         onClickItem={this.handleTableItem}
         carts={carts}
         tables={tables} />
+
       <Menu
-        isOpen={this.state.isOpenMenu}
-        onCloseModal={this.handleMenu}
+        isOpen={this.state.menu_dialog}
+        onCloseModal={() => this.handleDialog('menu_dialog')}
         onClickItem={this.handleMenuItem}
         menu={menu} />
 

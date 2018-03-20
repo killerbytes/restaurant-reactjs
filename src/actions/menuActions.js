@@ -1,7 +1,9 @@
 import { fetchMenu } from '../utils/api';
 
-export const FETCH_MENU = "FETCH_MENU"
-export const FETCH_MENU_FULFILLED = "FETCH_MENU_FULFILLED"
+import {
+  FETCH_MENU,
+  FETCH_MENU_FULFILLED
+} from '../constants/actionTypes'
 
 
 function shouldFetchMenu(state) {

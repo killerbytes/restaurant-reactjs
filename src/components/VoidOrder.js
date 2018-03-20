@@ -9,10 +9,10 @@ import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 
 
-export default function VoidOrder({ open, value, handleClose, handleSubmit, handleTextChange }) {
+export default function VoidOrder({ open, value, item, handleClose, handleSubmit, handleTextChange }) {
   return <Dialog
     open={open}
-    onClose={() => handleClose()}>
+    onClose={handleClose}>
     <DialogTitle>Void Order</DialogTitle>
     <DialogContent>
       <DialogContentText>
@@ -21,14 +21,17 @@ export default function VoidOrder({ open, value, handleClose, handleSubmit, hand
       <TextField
         type="number"
         label="Quantity"
-        onChange={handleTextChange}
+        name="voidQuantity"
+        onChange={(e) => handleTextChange(e)}
+        inputProps={{ min: 0, max: item.quantity }}
         value={value} />
     </DialogContent>
     <DialogActions>
       <Button
-        onClick={() => handleClose()}>Cancel</Button>
+        onClick={handleClose}>Cancel</Button>
       <Button
         color="primary"
+        disabled={value > 0 ? false : true}
         onClick={handleSubmit}>Submit</Button>
 
     </DialogActions>

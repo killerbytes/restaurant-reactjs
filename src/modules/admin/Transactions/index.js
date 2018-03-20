@@ -9,12 +9,12 @@ import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Ta
 
 
 import Box from '../../../components/Box'
-import { getTransactions } from '../../../actions/transactionActions'
+import { fetchTransactions } from '../../../actions/transactionActions'
 import { getTransactionTotals } from '../../../utils/index'
 
 class Transactions extends React.Component {
   componentDidMount() {
-    this.props.getTransactions()
+    this.props.fetchTransactions()
   }
   navigate = (item) => {
     this.props.history.push(`/admin/transactions/${item.id}`)
@@ -61,7 +61,7 @@ class Transactions extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    getTransactions
+    fetchTransactions
   }, dispatch)
 };
 
