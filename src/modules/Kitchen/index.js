@@ -49,60 +49,68 @@ class Kitchen extends React.Component {
   }
 
   handleTableItemClick = (order) => {
-    this.props.saveOrderStatus(order.id, 'ready')
+    this.props.saveOrderStatus([order.id], 'ready')
   }
 
+  handleClickDone = (cart) => {
+    const orders = cart.orders
+      .filter(order => order.status === 'pending')
+      .map(order => order.id)
+    this.props.saveOrderStatus(orders, 'ready')
+  }
   render() {
     const { carts } = this.props
 
 
-    const mappedCarts = carts.items.map(cart => {
+    const mappedCarts = carts.items
+      .filter(cart => cart.orders.find(order => order.status === 'pending'))
+      .map(cart => {
 
-      const mapperOrders = cart.orders.map(order => {
-        const getStatus = () => {
-          switch (order.status) {
-            case 'ready':
-              return <IconButton disabled><CheckIcon className={order.status}></CheckIcon></IconButton>
-            case 'complete':
-              return <IconButton disabled><CheckCircleIcon color="disabled" className={order.status}></CheckCircleIcon></IconButton>
-            default:
-              return <IconButton onClick={() => { this.handleTableItemClick(order) }}><CheckIcon className={order.status}></CheckIcon></IconButton>
+        const mapperOrders = cart.orders.map(order => {
+          const getStatus = () => {
+            switch (order.status) {
+              case 'ready':
+                return <IconButton disabled><CheckCircleIcon className={order.status}></CheckCircleIcon></IconButton>
+              case 'complete':
+                return <IconButton disabled><CheckIcon color="secondary" className={order.status}></CheckIcon></IconButton>
+              default:
+                return <IconButton onClick={() => { this.handleTableItemClick(order) }}><CheckIcon className={order.status}></CheckIcon></IconButton>
+            }
           }
-        }
 
-        return <TableRow key={order.id}>
-          <TableCell numeric padding="none">
-            {order.quantity}
-          </TableCell>
-          <TableCell style={{ whiteSpace: 'nowrap' }} padding="dense">
-            {order.product.name}
-          </TableCell>
-          <TableCell padding="none">
-            {getStatus()}
-          </TableCell>
-        </TableRow>
+          return <TableRow key={order.id}>
+            <TableCell numeric padding="none">
+              {order.quantity}
+            </TableCell>
+            <TableCell style={{ whiteSpace: 'nowrap' }} padding="dense">
+              {order.product.name}
+            </TableCell>
+            <TableCell padding="none">
+              {getStatus()}
+            </TableCell>
+          </TableRow>
+        })
+        return <div key={cart.id}>
+          <Card>
+            <CardContent>
+
+              {cart.customer.name}
+              <Table>
+                <TableBody>
+
+                  {mapperOrders}
+                </TableBody>
+              </Table>
+            </CardContent>
+            <Paper>
+
+            </Paper>
+            <CardActions>
+              <Button color="primary" onClick={() => this.handleClickDone(cart)}>Done</Button>
+            </CardActions>
+          </Card>
+        </div>
       })
-      return <div key={cart.id}>
-        <Card>
-          <CardContent>
-
-            {cart.customer.name}
-            <Table>
-              <TableBody>
-
-                {mapperOrders}
-              </TableBody>
-            </Table>
-          </CardContent>
-          <Paper>
-
-          </Paper>
-          <CardActions>
-            <Button color="primary">Done</Button>
-          </CardActions>
-        </Card>
-      </div>
-    })
 
     return <div className="container">
       <AppBar>

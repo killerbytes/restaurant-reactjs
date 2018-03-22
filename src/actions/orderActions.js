@@ -1,4 +1,4 @@
-import { fetchOrders, createOrders, createOrderVoid, updateOrderStatus } from '../utils/api';
+import * as api from '../utils/api';
 import {
   FETCH_ORDERS_FULFILLED,
   SAVE_ORDERS_FULFILLED,
@@ -11,7 +11,7 @@ import { getCart } from '../actions/cartActions'
 export function getOrders() {
   return function (dispatch) {
 
-    return fetchOrders().then(res => {
+    return api.fetchOrders().then(res => {
       return dispatch({
         type: FETCH_ORDERS_FULFILLED,
         payload: res
@@ -23,7 +23,7 @@ export function getOrders() {
 export function saveOrders(orders, cart_id) {
   return function (dispatch) {
 
-    return createOrders(orders, cart_id).then(res => {
+    return api.createOrders(orders, cart_id).then(res => {
       dispatch(getCart(cart_id))
       return dispatch({
         type: SAVE_ORDERS_FULFILLED,
@@ -36,7 +36,7 @@ export function saveOrders(orders, cart_id) {
 export function saveOrderVoid(cart_id, order_id, quantity) {
   return function (dispatch) {
 
-    return createOrderVoid(cart_id, order_id, quantity).then(res => {
+    return api.createOrderVoid(cart_id, order_id, quantity).then(res => {
       dispatch(getCart(cart_id))
       return dispatch({
         type: UPDATE_ORDER_FULFILLED,
@@ -46,9 +46,9 @@ export function saveOrderVoid(cart_id, order_id, quantity) {
   }
 }
 
-export function saveOrderStatus(order_id, status) {
+export function saveOrderStatus(order_ids, status) {
   return function (dispatch) {
 
-    return updateOrderStatus(order_id, status)
+    return api.updateOrderStatus(order_ids, status)
   }
 }

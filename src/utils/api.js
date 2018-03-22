@@ -30,7 +30,8 @@ export function createCart(cart) {
 
 export function changeCustomer(cart) {
   const { id, table_id, name } = cart
-  return axios.patch(`${url.api}/api/carts/${id}/customer`, {
+  return axios.patch(`${url.api}/api/carts/customer`, {
+    cart_id: id,
     table_id,
     name
   })
@@ -47,14 +48,17 @@ export function fetchOrders() {
   return axios.get(`${url.api}/api/orders`)
 }
 
-export function updateOrderStatus(order_id, status) {
-  return axios.patch(`${url.api}/api/orders/${order_id}/status`, {
+export function updateOrderStatus(order_ids, status) {
+  return axios.patch(`${url.api}/api/orders/status`, {
+    order_ids,
     status
   })
 }
 
+
 export function createOrderVoid(cart_id, order_id, quantity) {
-  return axios.patch(`${url.api}/api/orders/${order_id}/void`, {
+  return axios.patch(`${url.api}/api/orders/void`, {
+    order_id,
     cart_id,
     quantity
   })

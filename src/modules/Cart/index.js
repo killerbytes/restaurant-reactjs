@@ -133,7 +133,7 @@ class Cart extends React.Component {
   }
 
   handleReadyClick = (item) => {
-    this.props.saveOrderStatus(item.id, 'complete')
+    this.props.saveOrderStatus([item.id], 'complete')
   }
 
   render() {
@@ -144,6 +144,7 @@ class Cart extends React.Component {
     const total = getTotals(item.orders)
     const mappedOrders = item.orders.map(item => {
       const getStatus = () => {
+        console.log(item.status)
         switch (item.status) {
           case 'ready':
             return <IconButton onClick={() => { this.handleReadyClick(item) }}><CheckIcon className={item.status}></CheckIcon></IconButton>
