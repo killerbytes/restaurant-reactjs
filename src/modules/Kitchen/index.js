@@ -48,15 +48,15 @@ class Kitchen extends React.Component {
     this.setState({ [key]: open })
   }
 
-  handleTableItemClick = (order) => {
-    this.props.saveOrderStatus([order.id], 'ready')
+  handleTableItemClick = (cart, order) => {
+    this.props.saveOrderStatus(cart.id, [order.id], 'ready')
   }
 
-  handleClickDone = (cart) => {
+  handleComplete = (cart) => {
     const orders = cart.orders
       .filter(order => order.status === 'pending')
       .map(order => order.id)
-    this.props.saveOrderStatus(orders, 'ready')
+    this.props.saveOrderStatus(cart.id, orders, 'ready')
   }
   render() {
     const { carts } = this.props
@@ -70,11 +70,11 @@ class Kitchen extends React.Component {
           const getStatus = () => {
             switch (order.status) {
               case 'ready':
-                return <IconButton disabled><CheckCircleIcon className={order.status}></CheckCircleIcon></IconButton>
+                return <IconButton disabled><CheckIcon className={order.status}></CheckIcon></IconButton>
               case 'complete':
                 return <IconButton disabled><CheckIcon color="secondary" className={order.status}></CheckIcon></IconButton>
               default:
-                return <IconButton onClick={() => { this.handleTableItemClick(order) }}><CheckIcon className={order.status}></CheckIcon></IconButton>
+                return <IconButton onClick={() => { this.handleTableItemClick(cart, order) }}><CheckIcon className={order.status}></CheckIcon></IconButton>
             }
           }
 
@@ -106,7 +106,7 @@ class Kitchen extends React.Component {
 
             </Paper>
             <CardActions>
-              <Button color="primary" onClick={() => this.handleClickDone(cart)}>Done</Button>
+              <Button color="primary" onClick={() => this.handleComplete(cart)}>Done</Button>
             </CardActions>
           </Card>
         </div>

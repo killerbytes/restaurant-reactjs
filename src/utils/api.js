@@ -12,7 +12,7 @@ export function fetchTables() {
 
 
 export function fetchMenu() {
-  return axios.get(`${url.api}/api/utils/menu`)
+  return axios.get(`${url.api}/api/products/menu`)
 }
 
 // START CARTS
@@ -36,9 +36,9 @@ export function changeCustomer(cart) {
     name
   })
 }
-export function checkout(id) {
+export function checkout(id, is_checkout) {
   return axios.patch(`${url.api}/api/carts/${id}`, {
-    is_checkout: true
+    is_checkout
   })
 }
 // END CARTS
@@ -48,8 +48,9 @@ export function fetchOrders() {
   return axios.get(`${url.api}/api/orders`)
 }
 
-export function updateOrderStatus(order_ids, status) {
+export function updateOrderStatus(cart_id, order_ids, status) {
   return axios.patch(`${url.api}/api/orders/status`, {
+    cart_id,
     order_ids,
     status
   })
@@ -75,6 +76,10 @@ export function createOrders(orders, cart_id) {
 // START TRANSACTIONS
 export function fetchTransaction(id) {
   return axios.get(`${url.api}/api/transactions/${id}`)
+}
+
+export function fetchSales() {
+  return axios.get(`${url.api}/api/sales`)
 }
 
 export function fetchTransactions() {

@@ -14,6 +14,8 @@ import Kitchen from "./Kitchen";
 import AdminCartList from "./admin/Carts";
 import AdminCartDetail from "./admin/Carts/Detail";
 import AdminTransactions from "./admin/Transactions";
+import Sales from "./admin/Transactions/Sales";
+
 import AdminTransactionDetail from "./admin/Transactions/Detail";
 
 function Layout({ layout, component, ...rest }) {
@@ -52,6 +54,7 @@ class App extends React.Component {
       <Layout layout={AdminLayout} path="/admin/carts" component={AdminCartList} />
       <Layout layout={AdminLayout} path="/admin/transactions/:id" component={AdminTransactionDetail} />
       <Layout layout={AdminLayout} path="/admin/transactions" component={AdminTransactions} />
+      <Layout layout={AdminLayout} path="/admin/sales" component={Sales} />
 
     </Switch>
   }

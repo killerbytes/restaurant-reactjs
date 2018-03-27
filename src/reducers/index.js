@@ -7,6 +7,7 @@ import menu from "./menu";
 import carts from "./cart";
 import orders from "./order";
 import transaction from "./transaction";
+import sales from "./sales";
 import navigation from "./navigation";
 import error from "./error";
 import common from "./common"
@@ -19,6 +20,7 @@ export default combineReducers({
   carts,
   orders,
   transaction,
+  sales,
   navigation,
   error,
   common

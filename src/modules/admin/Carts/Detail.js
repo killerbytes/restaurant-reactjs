@@ -19,6 +19,8 @@ import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/D
 import Collapse from 'material-ui/transitions/Collapse';
 import ExpandLess from 'material-ui-icons/ExpandLess';
 import ExpandMore from 'material-ui-icons/ExpandMore';
+import BlockIcon from 'material-ui-icons/Block';
+import CheckIcon from 'material-ui-icons/Check';
 
 import VoidOrder from '../../../components/VoidOrder'
 import ErrorMessage from '../../../components/ErrorMessage'
@@ -127,12 +129,25 @@ class Carts extends React.Component {
     const subtotal = parseFloat(total.amount_due) - parseFloat(discount) || 0
     const change = parseFloat(amount) - parseFloat(subtotal) > 0 ? currency(amount).subtract(subtotal).format() : ""
     const mappedOrders = cart.orders.map(item => {
+      const getStatus = () => {
+        switch (item.status) {
+          case 'ready':
+            return <IconButton disabled><CheckIcon className={item.status}></CheckIcon></IconButton>
+          case 'complete':
+            return <IconButton disabled><CheckIcon color="secondary" className={item.status}></CheckIcon></IconButton>
+          default:
+            return <IconButton disabled><CheckIcon className={item.status}></CheckIcon></IconButton>
+            break;
+        }
+      }
+
       return <TableRow key={item.id}>
-        <TableCell style={{ whiteSpace: 'normal' }}><ButtonBase onClick={() => this.handleSetVoid(item)}>{item.product.name}</ButtonBase></TableCell>
+        <TableCell style={{ whiteSpace: 'normal' }}>{item.product.name}</TableCell>
         <TableCell>{item.user.name}</TableCell>
         <TableCell numeric>{format(item.created_at, 'h:mm:ss A')}</TableCell>
-        <TableCell>{item.status}</TableCell>
-        <TableCell numeric style={{ width: 70 }}>{item.quantity}</TableCell>
+        <TableCell>{getStatus()}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{item.quantity}  </TableCell>
+        <TableCell numeric style={{ width: 50 }}><IconButton onClick={() => this.handleSetVoid(item)}><BlockIcon></BlockIcon></IconButton></TableCell>
         <TableCell numeric style={{ width: 70 }}>{parseFloat(item.price).toFixed(2)}</TableCell>
         <TableCell numeric style={{ width: 70 }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
       </TableRow>
@@ -162,6 +177,7 @@ class Carts extends React.Component {
                 <TableCell numeric>Time</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell numeric>Quantity</TableCell>
+                <TableCell >Void</TableCell>
                 <TableCell numeric>Unit Price</TableCell>
                 <TableCell numeric>Total</TableCell>
               </TableRow>

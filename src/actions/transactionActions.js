@@ -5,7 +5,9 @@ import {
   SAVE_TRANSACTION_FULFILLED,
   SAVE_TRANSACTION_FAILED,
   FETCH_TRANSACTION_FULFILLED,
-  FETCH_TRANSACTIONS_FULFILLED
+  FETCH_TRANSACTIONS_FULFILLED,
+  FETCH_SALES,
+  FETCH_SALES_FULFILLED
 } from '../constants/actionTypes'
 
 export function fetchTransaction(id) {
@@ -29,6 +31,18 @@ export function fetchTransactions() {
     return api.fetchTransactions().then(res => {
       return dispatch({
         type: FETCH_TRANSACTIONS_FULFILLED,
+        payload: res
+      });
+    })
+  }
+}
+
+export function fetchSales() {
+  return function (dispatch) {
+
+    return api.fetchSales().then(res => {
+      return dispatch({
+        type: FETCH_SALES_FULFILLED,
         payload: res
       });
     })

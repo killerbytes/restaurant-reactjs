@@ -1,21 +1,23 @@
 import {
-  FETCH_CATEGORIES,
-  FETCH_CATEGORIES_FULFILLED
+  FETCH_SALES,
+  FETCH_SALES_FULFILLED
 } from "../constants/actionTypes";
 
 export default function reducer(
   state = {
-    loading: false, items: [],
+    loading: false, items: []
   },
   action
 ) {
+
   switch (action.type) {
-    case FETCH_CATEGORIES: {
+    case FETCH_SALES: {
       return { ...state, loading: true, items: [] };
     }
-    case FETCH_CATEGORIES_FULFILLED: {
+    case FETCH_SALES_FULFILLED: {
       return { ...state, loading: false, ...action.payload.data };
     }
+
     default:
       return state;
   }

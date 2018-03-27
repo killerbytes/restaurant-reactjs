@@ -46,9 +46,8 @@ export function saveOrderVoid(cart_id, order_id, quantity) {
   }
 }
 
-export function saveOrderStatus(order_ids, status) {
+export function saveOrderStatus(cart_id, order_ids, status) {
   return function (dispatch) {
-
-    return api.updateOrderStatus(order_ids, status)
+    return api.updateOrderStatus(cart_id, order_ids, status)
   }
 }

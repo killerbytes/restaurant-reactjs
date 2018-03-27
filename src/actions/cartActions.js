@@ -1,4 +1,4 @@
-import { fetchCart, fetchCarts, createCart, changeCustomer, checkout } from '../utils/api';
+import * as api from '../utils/api';
 
 import {
   FETCH_CART_FULFILLED,
@@ -13,7 +13,7 @@ import { fetchTablesIfNeeded } from './tableActions'
 
 export function getCart(id) {
   return function (dispatch) {
-    return fetchCart(id)
+    return api.fetchCart(id)
       .then(res => {
         return dispatch({
           type: FETCH_CART_FULFILLED,
@@ -28,7 +28,7 @@ export function getCart(id) {
 export function getCarts() {
   return function (dispatch) {
 
-    return fetchCarts().then(res => {
+    return api.fetchCarts().then(res => {
       return dispatch({
         type: FETCH_CARTS_FULFILLED,
         payload: res
@@ -40,7 +40,7 @@ export function getCarts() {
 export function moveCustomer(item) {
   return function (dispatch) {
 
-    return changeCustomer(item).then(res => {
+    return api.changeCustomer(item).then(res => {
       dispatch(fetchTablesIfNeeded())
       dispatch(getCart(item.id))
 
@@ -52,9 +52,9 @@ export function moveCustomer(item) {
   }
 }
 
-export function checkoutCart(id) {
+export function checkoutCart(id, status = true) {
   return function (dispatch) {
-    return checkout(id).then(res => {
+    return api.checkout(id, status).then(res => {
       return dispatch(getCart(id))
     })
   }
@@ -64,7 +64,7 @@ export function checkoutCart(id) {
 export function saveCart(cart) {
   return function (dispatch) {
     dispatch({ type: SAVE_CART })
-    return createCart(cart).then(res => {
+    return api.createCart(cart).then(res => {
       return dispatch({
         type: SAVE_CART_FULFILLED,
         payload: res

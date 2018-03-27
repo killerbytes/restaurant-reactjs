@@ -23,10 +23,10 @@ class Transactions extends React.Component {
     const { transaction: { items } } = this.props
     const total = getTransactionTotals(items)
     const mappedOrders = items.map(item => {
-      return <TableRow key={item.id} hover onClick={() => this.navigate(item)}>
+      return <TableRow key={item.id} hover style={{ cursor: 'pointer' }} onClick={() => this.navigate(item)}>
         <TableCell style={{ whiteSpace: 'normal' }}>{item.cart.customer.name}</TableCell>
-        <TableCell style={{ width: 150 }}>{format(item.created_at, 'YY-MM-DD h:mm:ss A')}</TableCell>
-        <TableCell style={{ width: 70 }}>{item.user.name}</TableCell>
+        <TableCell numeric>{format(item.created_at, 'YY-MM-DD h:mm:ss A')}</TableCell>
+        <TableCell style={{ width: 170 }}>{item.user.name}</TableCell>
         <TableCell numeric style={{ width: 70 }}>{currency(item.total_amount_due).format()}</TableCell>
       </TableRow>
     })
@@ -38,7 +38,7 @@ class Transactions extends React.Component {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Date</TableCell>
+              <TableCell numeric>Date</TableCell>
               <TableCell>Cashier</TableCell>
               <TableCell numeric>Amount</TableCell>
             </TableRow>

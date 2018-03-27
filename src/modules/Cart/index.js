@@ -72,7 +72,7 @@ class Cart extends React.Component {
 
   checkout = () => {
     const { match: { params }, checkoutCart, carts: { item } } = this.props
-    checkoutCart(item[params.id].id)
+    checkoutCart(item[params.id].id, true)
   }
 
   increaseQty = (item) => {
@@ -133,7 +133,8 @@ class Cart extends React.Component {
   }
 
   handleReadyClick = (item) => {
-    this.props.saveOrderStatus([item.id], 'complete')
+    const { match: { params }, saveOrderStatus } = this.props
+    saveOrderStatus(params.id, [item.id], 'complete')
   }
 
   render() {
@@ -144,12 +145,11 @@ class Cart extends React.Component {
     const total = getTotals(item.orders)
     const mappedOrders = item.orders.map(item => {
       const getStatus = () => {
-        console.log(item.status)
         switch (item.status) {
           case 'ready':
             return <IconButton onClick={() => { this.handleReadyClick(item) }}><CheckIcon className={item.status}></CheckIcon></IconButton>
           case 'complete':
-            return <IconButton disabled><CheckCircleIcon color="disabled" className={item.status}></CheckCircleIcon></IconButton>
+            return <IconButton disabled><CheckIcon color="secondary" className={item.status}></CheckIcon></IconButton>
           default:
             break;
         }

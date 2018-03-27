@@ -5,33 +5,31 @@ import Dialog, {
   DialogContent,
   DialogTitle,
 } from 'material-ui/Dialog';
+import Grid from 'material-ui/Grid';
+
 import MenuItem from './MenuItem'
 
 
 export default function Menu(props) {
   const { menu, isOpen = false, onCloseModal } = props
   const { items } = menu
-  const drinks = items.find(i => i.id === 1)
-  const appetizers = items.find(i => i.id === 2)
-  const beef = items.find(i => i.id === 3)
-  const chicken = items.find(i => i.id === 4)
-  const pork = items.find(i => i.id === 5)
-
+  const mappedMenu = items.map(category => {
+    return <Grid key={category.id} item sm={6}>
+      <MenuItem item={category} {...props} />
+    </Grid>
+  })
+  console.log(mappedMenu)
   return <Dialog
     fullScreen
     onClose={() => onCloseModal()}
     open={isOpen}>
     <DialogTitle>Menu</DialogTitle>
     <DialogContent>
+      <Grid container>
+        {mappedMenu}
+      </Grid>
       <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
         <div>
-          {chicken && <MenuItem item={chicken} {...props} />}
-          {pork && <MenuItem item={pork} {...props} />}
-          {beef && <MenuItem item={beef} {...props} />}
-        </div>
-        <div>
-          {drinks && <MenuItem item={drinks} {...props} />}
-          {appetizers && <MenuItem item={appetizers} {...props} />}
         </div>
       </div>
     </DialogContent>
