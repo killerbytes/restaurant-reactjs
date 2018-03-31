@@ -10,10 +10,17 @@ export function fetchTables() {
   return axios.get(`${url.api}/api/tables`)
 }
 
+// START PRODUCTS
 
-export function fetchMenu() {
-  return axios.get(`${url.api}/api/products/menu`)
+export function fetchProducts() {
+  return axios.get(`${url.api}/api/products`)
 }
+export function fetchProductByCategories() {
+  return axios.get(`${url.api}/api/products/categories`)
+}
+// END PRODUCTS
+
+
 
 // START CARTS
 export function fetchCart(id) {

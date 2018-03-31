@@ -12,7 +12,6 @@ import Paper from 'material-ui/Paper';
 import ActionHome from 'material-ui-icons/Home';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
 import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
-import CheckCircleIcon from 'material-ui-icons/CheckCircle';
 
 import { getCarts } from "../../actions/cartActions";
 import { saveOrderStatus } from "../../actions/orderActions";

@@ -12,7 +12,7 @@ import ActionHome from 'material-ui-icons/Home';
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
 import { fetchTablesIfNeeded } from '../../actions/tableActions'
 import { saveCart, getCarts } from '../../actions/cartActions'
-import { fetchMenuIfNeeded } from '../../actions/menuActions'
+import { fetchProductsIfNeeded } from '../../actions/productActions'
 
 import Menu from '../../components/Menu'
 import TablePicker from '../../components/TablePicker'
@@ -49,7 +49,7 @@ class Home extends React.Component {
   componentDidMount() {
     this.props.fetchCategoriesIfNeeded()
     this.props.fetchTablesIfNeeded()
-    this.props.fetchMenuIfNeeded()
+    this.props.fetchProductsIfNeeded()
     this.props.getCarts()
   }
 
@@ -128,7 +128,7 @@ class Home extends React.Component {
   }
 
   render() {
-    const { tables, carts, menu } = this.props
+    const { tables, carts, product } = this.props
     const { table, orders } = this.state
     return <div className="container">
       <AppBar>
@@ -172,7 +172,7 @@ class Home extends React.Component {
         isOpen={this.state.menu_dialog}
         onCloseModal={() => this.handleDialog('menu_dialog')}
         onClickItem={this.handleMenuItem}
-        menu={menu} />
+        product={product} />
 
 
     </div>
@@ -183,17 +183,17 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators({
     fetchCategoriesIfNeeded,
     fetchTablesIfNeeded,
+    fetchProductsIfNeeded,
     saveCart,
-    getCarts,
-    fetchMenuIfNeeded
+    getCarts
   }, dispatch)
 };
 
-const mapStateToProps = ({ categories, tables, carts, menu }) => ({
+const mapStateToProps = ({ categories, tables, carts, product }) => ({
   categories,
   tables,
   carts,
-  menu
+  product
 });
 
 

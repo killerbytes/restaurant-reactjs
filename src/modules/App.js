@@ -15,6 +15,8 @@ import AdminCartList from "./admin/Carts";
 import AdminCartDetail from "./admin/Carts/Detail";
 import AdminTransactions from "./admin/Transactions";
 import Sales from "./admin/Transactions/Sales";
+import Products from "./Products";
+import NewProduct from "./Products/New";
 
 import AdminTransactionDetail from "./admin/Transactions/Detail";
 
@@ -55,6 +57,8 @@ class App extends React.Component {
       <Layout layout={AdminLayout} path="/admin/transactions/:id" component={AdminTransactionDetail} />
       <Layout layout={AdminLayout} path="/admin/transactions" component={AdminTransactions} />
       <Layout layout={AdminLayout} path="/admin/sales" component={Sales} />
+      <Layout layout={AdminLayout} path="/admin/products" component={Products} />
+      <Layout layout={AdminLayout} path="/products/new" component={NewProduct} />
 
     </Switch>
   }

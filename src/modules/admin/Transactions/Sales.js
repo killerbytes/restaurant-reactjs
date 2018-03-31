@@ -1,13 +1,10 @@
 import React from "react";
 import { bindActionCreators } from 'redux'
-import { format } from 'date-fns'
 import { connect } from "react-redux";
-import currency from 'currency.js'
 import shortid from "shortid";
 
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
 import ListSubheader from 'material-ui/List/ListSubheader';
 
 import { fetchSales } from '../../../actions/transactionActions'

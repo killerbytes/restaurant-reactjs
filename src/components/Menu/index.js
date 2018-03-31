@@ -11,14 +11,13 @@ import MenuItem from './MenuItem'
 
 
 export default function Menu(props) {
-  const { menu, isOpen = false, onCloseModal } = props
-  const { items } = menu
+  const { product: { items }, isOpen = false, onCloseModal } = props
   const mappedMenu = items.map(category => {
     return <Grid key={category.id} item sm={6}>
       <MenuItem item={category} {...props} />
     </Grid>
   })
-  console.log(mappedMenu)
+
   return <Dialog
     fullScreen
     onClose={() => onCloseModal()}

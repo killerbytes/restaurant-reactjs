@@ -14,12 +14,11 @@ import Place from 'material-ui-icons/Place';
 import ContentAdd from 'material-ui-icons/Add';
 import Paper from 'material-ui/Paper';
 import CheckIcon from 'material-ui-icons/Check';
-import CheckCircleIcon from 'material-ui-icons/CheckCircle';
 
 import { getTotals } from '../../utils'
 import { getCart, getCarts, moveCustomer, checkoutCart } from '../../actions/cartActions'
 import { createTransaction } from '../../actions/transactionActions'
-import { fetchMenuIfNeeded } from '../../actions/menuActions'
+import { fetchProductsIfNeeded } from '../../actions/productActions'
 import { saveOrders, saveOrderStatus } from '../../actions/orderActions'
 import { fetchTablesIfNeeded } from '../../actions/tableActions'
 
@@ -65,7 +64,7 @@ class Cart extends React.Component {
     this.props.fetchTablesIfNeeded()
     this.props.getCarts()
     this.props.getCart(params.id)
-    this.props.fetchMenuIfNeeded()
+    this.props.fetchProductsIfNeeded()
 
 
   }
@@ -260,7 +259,7 @@ const mapDispatchToProps = dispatch => {
     getCarts,
     moveCustomer,
     checkoutCart,
-    fetchMenuIfNeeded,
+    fetchProductsIfNeeded,
     fetchTablesIfNeeded,
     createTransaction,
     saveOrders,

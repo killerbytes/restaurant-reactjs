@@ -11,7 +11,6 @@ import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
 import Toolbar from 'material-ui/Toolbar';
-import ButtonBase from 'material-ui/ButtonBase';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Delete from 'material-ui-icons/Delete';
@@ -137,7 +136,6 @@ class Carts extends React.Component {
             return <IconButton disabled><CheckIcon color="secondary" className={item.status}></CheckIcon></IconButton>
           default:
             return <IconButton disabled><CheckIcon className={item.status}></CheckIcon></IconButton>
-            break;
         }
       }
 
