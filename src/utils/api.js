@@ -2,13 +2,30 @@ import axios from "axios";
 
 import { url } from "../constants/config";
 
-export function fetchCategories() {
-  return axios.get(`${url.api}/api/categories`)
-}
-
 export function fetchTables() {
   return axios.get(`${url.api}/api/tables`)
 }
+
+// START CATEGORIES
+export function fetchCategories() {
+  return axios.get(`${url.api}/api/categories`)
+}
+export function fetchCategory(id) {
+  return axios.get(`${url.api}/api/categories/${id}`)
+}
+export function createCategory(category) {
+  return axios.post(`${url.api}/api/categories`, category)
+}
+export function updateCategory(id, category) {
+  return axios.patch(`${url.api}/api/categories/${id}`, category)
+}
+export function deleteCategory(id) {
+  return axios.delete(`${url.api}/api/categories/${id}`)
+}
+
+
+
+// END CATEGORIES
 
 // START PRODUCTS
 export function fetchProduct(id) {

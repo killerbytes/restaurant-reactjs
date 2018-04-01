@@ -1,18 +1,66 @@
-import { fetchCategories } from '../utils/api';
+import * as api from '../utils/api';
 
 import {
-  FETCH_CATEGORIES_FULFILLED
+  INVALIDATE_CATEGORIES,
+  FETCH_CATEGORIES,
+  FETCH_CATEGORIES_FULFILLED,
+  FETCH_CATEGORY_FULFILLED,
+  SAVE_CATEGORY_FULFILLED
 } from '../constants/actionTypes'
+
+export function fetchCategory(id) {
+  return function (dispatch) {
+
+    return api.fetchCategory(id).then(res => {
+      return dispatch({
+        type: FETCH_CATEGORY_FULFILLED,
+        payload: res
+      });
+    })
+  }
+}
+
+export function createCategory(category) {
+  return function (dispatch) {
+    return api.createCategory(category).then(res => {
+      dispatch({ type: INVALIDATE_CATEGORIES })
+      return dispatch({
+        type: SAVE_CATEGORY_FULFILLED
+      })
+    })
+  }
+}
+
+export function updateCategory(id, category) {
+  return function (dispatch) {
+    return api.updateCategory(id, category).then(res => {
+      dispatch({ type: INVALIDATE_CATEGORIES })
+      return dispatch({
+        type: SAVE_CATEGORY_FULFILLED,
+        id
+      })
+    })
+  }
+}
+
+export function deleteCategory(id) {
+  return function (dispatch) {
+    return api.deleteCategory(id).then(res => {
+      dispatch({ type: INVALIDATE_CATEGORIES })
+      return dispatch({
+        type: SAVE_CATEGORY_FULFILLED
+      })
+    })
+  }
+}
 
 
 
 function shouldFetchCategories(state) {
   const { categories } = state
-  if (!categories.items.length) {
-    return true
-  } else {
-    return false
-  }
+  if (!categories.items.length) return true
+  if (categories.loading) return true
+  return categories.didInvalidate
 }
 
 export function fetchCategoriesIfNeeded() {
@@ -29,7 +77,7 @@ export function fetchCategoriesIfNeeded() {
 export function getCategories() {
   return function (dispatch) {
 
-    return fetchCategories().then(res => {
+    return api.fetchCategories().then(res => {
       return dispatch({
         type: FETCH_CATEGORIES_FULFILLED,
         payload: res

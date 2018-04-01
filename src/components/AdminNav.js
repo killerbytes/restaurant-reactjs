@@ -43,7 +43,7 @@ class AdminNav extends React.Component {
         <ListItem button onClick={() => this.handleNavigate('/products')}>
           <ListItemText primary="Products" />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => this.handleNavigate('/categories')}>
           <ListItemText primary="Categories" />
         </ListItem>
         <ListItem button onClick={() => this.handleNavigate('/admin/carts')}>
