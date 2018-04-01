@@ -5,23 +5,28 @@ import { connect } from "react-redux";
 import { Link } from 'react-router-dom'
 
 import ListSubheader from 'material-ui/List/ListSubheader';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import List, { ListItem, ListItemText } from 'material-ui/List';
 import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button'
 import ContentAddIcon from 'material-ui-icons/Add';
 
-import { fetchProductByCategories } from '../../actions/productActions'
+import { fetchProductsIfNeeded } from '../../actions/productActions'
 
 class Products extends React.Component {
   componentDidMount() {
-    this.props.fetchProductByCategories()
+    this.props.fetchProductsIfNeeded()
   }
-
+  handleItemClick = (item) => {
+    const { history } = this.props
+    history.push(`/products/${item.id}`)
+  }
   render() {
+    console.log('index')
     const { product } = this.props
+
     const mappedCategories = product.items.map(category => {
       const mappedProducts = category.products.map(item => {
-        return <ListItem button key={item.id}>
+        return <ListItem button key={item.id} onClick={() => this.handleItemClick(item)}>
           <ListItemText primary={item.name} />
         </ListItem>
       })
@@ -34,14 +39,15 @@ class Products extends React.Component {
         </List>
       </Paper>
     })
-    console.log(this.props)
+
+
     return <div className="container">
       {mappedCategories}
 
-
-      <Button variant="fab" component={Link} to="/products/new" style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
+      <Button variant="fab" component={Link} to="/products/new" style={{ position: 'fixed', zIndex: 10, bottom: '2rem', right: '2rem' }}>
         <ContentAddIcon />
       </Button>
+
 
     </div>
   }
@@ -49,7 +55,7 @@ class Products extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    fetchProductByCategories
+    fetchProductsIfNeeded
   }, dispatch)
 };
 

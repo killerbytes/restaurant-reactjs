@@ -66,9 +66,6 @@ class Carts extends React.Component {
     }
 
   }
-  handleItemClick = (item) => {
-    this.props.history.push(`/admin/carts/${item.id}`)
-  }
 
   handleTextChange = (e) => {
     this.setState({ [e.target.name]: e.target.value })
@@ -200,7 +197,15 @@ class Carts extends React.Component {
 
       {
         mappedVoid && <div>
+          <details>
+            <summary>Void</summary>
+            <Paper className="mb">
+              <Table>
+                <TableBody>{mappedVoid}</TableBody>
+              </Table>
+            </Paper>
 
+          </details>
           <Toolbar>
             <Typography >
               Void

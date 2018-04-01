@@ -2,68 +2,52 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
 
-import Select from 'material-ui/Select';
 import Button from 'material-ui/Button'
-import ContentAddIcon from 'material-ui-icons/Add';
-import { MenuItem } from 'material-ui/Menu';
 
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
+import { createProduct } from "../../actions/productActions";
 
-class Products extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      category: 'none'
-    }
-  }
+import Form from './Form'
+
+
+
+class NewProduct extends React.Component {
   componentDidMount() {
     this.props.fetchCategoriesIfNeeded()
   }
-  handleChange = (e) => {
-    console.log(e.target.name, e.target.value)
+
+  handleSubmit = (form) => {
+    this.props.createProduct(form)
   }
 
   render() {
-
-    const { categories } = this.props
-    const mappedCategories = categories.items.map(category => {
-      return <MenuItem key={category.id} name="category" value={category.id}>{category.name}</MenuItem>
-    })
-    console.log(this.props)
+    const { categories, } = this.props
     return <div className="container">
-      <Select
-        inputProps={{
-          name: 'category',
-          id: 'category',
-        }}
-        value={this.state.category}
-        onChange={(e) => this.handleChange(e)}>
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
-
-        {mappedCategories}
-      </Select>
-      <Button variant="fab" style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
-        <ContentAddIcon />
-      </Button>
-
+      <Form categories={categories} onSubmit={this.handleSubmit}>
+        <Button >Cancel</Button>
+        <Button type="submit">Save</Button>
+      </Form>
     </div>
   }
+
 }
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
+    createProduct,
     fetchCategoriesIfNeeded
   }, dispatch)
 };
 
-const mapStateToProps = ({ categories }) => ({
-  categories
-});
+const mapStateToProps = ({ categories, form }) => {
+  return ({
+    categories,
+    form
+  });
+}
 
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Products);
+)(NewProduct);

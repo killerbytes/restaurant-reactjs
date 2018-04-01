@@ -13,6 +13,7 @@ import './sass/main.css'
 import App from "./modules/App";
 
 
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -37,6 +38,7 @@ ReactDOM.render(
       <CssBaseline />
       <Router>
         <App />
+
       </Router>
     </MuiThemeProvider>
 

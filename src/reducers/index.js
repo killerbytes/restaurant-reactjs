@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { reducer as formReducer } from 'redux-form'
 
 import user from "./user";
 import categories from './category'
@@ -23,5 +24,7 @@ export default combineReducers({
   product,
   navigation,
   error,
-  common
+  common,
+  form: formReducer
+
 });

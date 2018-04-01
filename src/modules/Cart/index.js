@@ -137,7 +137,8 @@ class Cart extends React.Component {
   }
 
   render() {
-    const { carts, menu, tables, match: { params } } = this.props
+    const { carts, product, tables, match: { params } } = this.props
+    console.log(this.props)
     const { orders } = this.state
     const item = carts.item && carts.item[params.id]
     if (!item) return false
@@ -231,7 +232,7 @@ class Cart extends React.Component {
               isOpen={this.state.menu_dialog}
               onCloseModal={() => this.handleDialog('menu_dialog')}
               onClickItem={this.handleMenuItem}
-              menu={menu} />
+              product={product} />
           }
 
           <TablePicker
@@ -267,11 +268,11 @@ const mapDispatchToProps = dispatch => {
   }, dispatch)
 };
 
-const mapStateToProps = ({ categories, tables, carts, menu }) => ({
+const mapStateToProps = ({ categories, tables, carts, product }) => ({
   categories,
   tables,
   carts,
-  menu
+  product
 });
 
 

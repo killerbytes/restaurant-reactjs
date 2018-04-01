@@ -11,12 +11,30 @@ export function fetchTables() {
 }
 
 // START PRODUCTS
+export function fetchProduct(id) {
+  return axios.get(`${url.api}/api/products/${id}`)
+}
+export function createProduct(product) {
+  return axios.post(`${url.api}/api/products`,
+    product
+  )
+}
+
+export function updateProduct(id, product) {
+  return axios.patch(`${url.api}/api/products/${id}`,
+    product
+  )
+}
+
+export function deleteProduct(id) {
+  return axios.delete(`${url.api}/api/products/${id}`)
+}
 
 export function fetchProducts() {
   return axios.get(`${url.api}/api/products`)
 }
 export function fetchProductByCategories() {
-  return axios.get(`${url.api}/api/products/categories`)
+  return axios.get(`${url.api}/api/products/by_category`)
 }
 // END PRODUCTS
 
