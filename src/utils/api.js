@@ -1,10 +1,24 @@
 import axios from "axios";
 
 import { url } from "../constants/config";
-
+// START TABLES
 export function fetchTables() {
   return axios.get(`${url.api}/api/tables`)
 }
+export function fetchTable(id) {
+  return axios.get(`${url.api}/api/tables/${id}`)
+}
+export function createTable(table) {
+  return axios.post(`${url.api}/api/tables`, table)
+}
+export function updateTable(id, table) {
+  return axios.patch(`${url.api}/api/tables/${id}`, table)
+}
+export function deleteTable(id) {
+  return axios.delete(`${url.api}/api/tables/${id}`)
+}
+
+// END TABLES
 
 // START CATEGORIES
 export function fetchCategories() {

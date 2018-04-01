@@ -1,5 +1,6 @@
 import {
   REDIRECT,
+  SAVE_TABLE_FULFILLED,
   SAVE_CATEGORY_FULFILLED,
   SAVE_PRODUCT_FULFILLED,
   SAVE_TRANSACTION_FULFILLED
@@ -14,6 +15,10 @@ export default function reducer(
   switch (action.type) {
     case REDIRECT:
       return { ...state, redirectTo: null };
+    case SAVE_TABLE_FULFILLED: {
+      const redirectTo = `/tables`
+      return { ...state, redirectTo }
+    }
     case SAVE_CATEGORY_FULFILLED: {
       const redirectTo = `/categories`
       return { ...state, redirectTo }

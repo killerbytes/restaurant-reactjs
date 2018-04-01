@@ -52,7 +52,6 @@ let Form = ({ classes, categories, onSubmit, handleSubmit, submitting, children 
     <CardContent className="mb">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Field component={TextInput} label="Name" name="name" fullWidth />
-        <Field className={classes.textField} component={TextInput} label="Order" name="order" type="number" />
         {children}
       </form>
     </CardContent>

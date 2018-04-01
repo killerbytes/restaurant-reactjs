@@ -1,17 +1,68 @@
-import { fetchTables } from '../utils/api';
+import * as api from '../utils/api';
 
 import {
-  FETCH_TABLES_FULFILLED
+  INVALIDATE_TABLES,
+  FETCH_TABLE_FULFILLED,
+  FETCH_TABLES_FULFILLED,
+  SAVE_TABLE_FULFILLED,
+  SAVE_CATEGORY_FULFILLED
 } from '../constants/actionTypes'
+
+
+export function fetchTable(id) {
+  return function (dispatch) {
+
+    return api.fetchTable(id).then(res => {
+      return dispatch({
+        type: FETCH_TABLE_FULFILLED,
+        payload: res
+      });
+    })
+  }
+}
+
+export function createTable(category) {
+  return function (dispatch) {
+    return api.createTable(category).then(res => {
+      dispatch({ type: INVALIDATE_TABLES })
+      return dispatch({
+        type: SAVE_TABLE_FULFILLED
+      })
+    })
+  }
+}
+
+export function updateTable(id, category) {
+  return function (dispatch) {
+    return api.updateTable(id, category).then(res => {
+      dispatch({ type: INVALIDATE_TABLES })
+      return dispatch({
+        type: SAVE_TABLE_FULFILLED,
+        id
+      })
+    })
+  }
+}
+
+export function deleteTable(id) {
+  return function (dispatch) {
+    return api.deleteTable(id).then(res => {
+      dispatch({ type: INVALIDATE_TABLES })
+      return dispatch({
+        type: SAVE_TABLE_FULFILLED
+      })
+    })
+  }
+}
+
 
 
 function shouldFetchTables(state) {
   const { tables } = state
-  if (!tables.items.length) {
-    return true
-  } else {
-    return false
-  }
+  if (!tables.items.length) return true
+  if (tables.loading) return true
+  return tables.didInvalidate
+
 }
 
 export function fetchTablesIfNeeded() {
@@ -28,7 +79,7 @@ export function fetchTablesIfNeeded() {
 export function getTables() {
   return function (dispatch) {
 
-    return fetchTables().then(res => {
+    return api.fetchTables().then(res => {
       return dispatch({
         type: FETCH_TABLES_FULFILLED,
         payload: res

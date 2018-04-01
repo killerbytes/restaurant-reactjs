@@ -21,6 +21,9 @@ import ProductEdit from './Products/Edit'
 import Categories from "./Categories";
 import CategoryNew from "./Categories/New";
 import CategoryEdit from './Categories/Edit'
+import Tables from "./Tables";
+import TableNew from "./Tables/New";
+import TableEdit from './Tables/Edit'
 
 import AdminTransactionDetail from "./admin/Transactions/Detail";
 
@@ -70,6 +73,9 @@ class App extends React.Component {
         <Layout layout={AdminLayout} path="/categories/new" component={CategoryNew} />
         <Layout layout={AdminLayout} path="/categories/:id" component={CategoryEdit} />
         <Layout layout={AdminLayout} exact path="/categories" component={Categories} />
+        <Layout layout={AdminLayout} path="/tables/new" component={TableNew} />
+        <Layout layout={AdminLayout} path="/tables/:id" component={TableEdit} />
+        <Layout layout={AdminLayout} exact path="/tables" component={Tables} />
 
       </Switch>
     </ScrollToTop>

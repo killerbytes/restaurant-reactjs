@@ -46,6 +46,9 @@ class AdminNav extends React.Component {
         <ListItem button onClick={() => this.handleNavigate('/categories')}>
           <ListItemText primary="Categories" />
         </ListItem>
+        <ListItem button onClick={() => this.handleNavigate('/tables')}>
+          <ListItemText primary="Tables" />
+        </ListItem>
         <ListItem button onClick={() => this.handleNavigate('/admin/carts')}>
           <ListItemText primary="Open Carts" />
           <ListItemSecondaryAction>

@@ -9,20 +9,20 @@ import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button'
 import ContentAddIcon from 'material-ui-icons/Add';
 
-import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
+import { fetchTablesIfNeeded } from '../../actions/tableActions'
 
 class Categories extends React.Component {
     componentDidMount() {
-        this.props.fetchCategoriesIfNeeded()
+        this.props.fetchTablesIfNeeded()
     }
     handleItemClick = (item) => {
         const { history } = this.props
-        history.push(`/categories/${item.id}`)
+        history.push(`/tables/${item.id}`)
     }
     render() {
-        const { categories } = this.props
+        const { tables } = this.props
 
-        const mappedCategories = categories.items.map(category => {
+        const mappedTables = tables.items.map(category => {
             return <ListItem button key={category.id} onClick={() => this.handleItemClick(category)}>
                 <ListItemText primary={category.name} />
             </ListItem>
@@ -35,11 +35,11 @@ class Categories extends React.Component {
 
                 <List>
 
-                    {mappedCategories}
+                    {mappedTables}
                 </List>
             </Paper>
 
-            <Button variant="fab" component={Link} to="/categories/new" style={{ position: 'fixed', zIndex: 10, bottom: '2rem', right: '2rem' }}>
+            <Button variant="fab" component={Link} to="/tables/new" style={{ position: 'fixed', zIndex: 10, bottom: '2rem', right: '2rem' }}>
                 <ContentAddIcon />
             </Button>
 
@@ -50,12 +50,12 @@ class Categories extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-        fetchCategoriesIfNeeded
+        fetchTablesIfNeeded
     }, dispatch)
 };
 
-const mapStateToProps = ({ categories }) => ({
-    categories
+const mapStateToProps = ({ tables }) => ({
+    tables
 });
 
 
