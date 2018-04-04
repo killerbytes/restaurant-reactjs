@@ -5,30 +5,23 @@ import { Link } from 'react-router-dom'
 
 import Button from 'material-ui/Button'
 
-import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
-import { createCategory } from "../../actions/categoryActions";
+import { createUser } from "../../actions/userActions";
 
 import Form from './Form'
 
 
 
 class NewProduct extends React.Component {
-  componentDidMount() {
-    this.props.fetchCategoriesIfNeeded()
-  }
 
   handleSubmit = (form) => {
-    this.props.createCategory(form)
+    this.props.createUser(form)
   }
 
   render() {
     return <div className="container">
       <Form onSubmit={this.handleSubmit}>
-        <div style={{ float: 'right' }}>
-          <Button variant="raised" component={Link} to="/categories">Cancel</Button>
-          <Button variant="raised" color="primary" type="submit" >Save</Button>
-        </div>
-        <div></div>
+        <Button variant="raised" component={Link} to="/tables">Cancel</Button>
+        <Button variant="raised" color="primary" type="submit" style={{ float: 'right' }}>Save</Button>
       </Form>
     </div>
   }
@@ -37,14 +30,12 @@ class NewProduct extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    createCategory,
-    fetchCategoriesIfNeeded
+    createUser,
   }, dispatch)
 };
 
-const mapStateToProps = ({ categories, form }) => {
+const mapStateToProps = ({ form }) => {
   return ({
-    categories,
     form
   });
 }

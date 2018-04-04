@@ -3,7 +3,8 @@ import {
   SAVE_TABLE_FULFILLED,
   SAVE_CATEGORY_FULFILLED,
   SAVE_PRODUCT_FULFILLED,
-  SAVE_TRANSACTION_FULFILLED
+  SAVE_TRANSACTION_FULFILLED,
+  SAVE_USER_FULFILLED
 } from "../constants/actionTypes";
 
 export default function reducer(
@@ -15,6 +16,10 @@ export default function reducer(
   switch (action.type) {
     case REDIRECT:
       return { ...state, redirectTo: null };
+    case SAVE_USER_FULFILLED: {
+      const redirectTo = `/users`
+      return { ...state, redirectTo }
+    }
     case SAVE_TABLE_FULFILLED: {
       const redirectTo = `/tables`
       return { ...state, redirectTo }

@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer } from 'redux-form'
 
-import user from "./user";
+import users from "./user";
 import categories from './category'
 import tables from "./table";
 import carts from "./cart";
@@ -10,11 +10,11 @@ import transaction from "./transaction";
 import sales from "./sales";
 import product from "./product";
 import navigation from "./navigation";
-import error from "./error";
+import errors from "./error";
 import common from "./common"
 
 export default combineReducers({
-  user,
+  users,
   categories,
   tables,
   carts,
@@ -23,7 +23,7 @@ export default combineReducers({
   sales,
   product,
   navigation,
-  error,
+  errors,
   common,
   form: formReducer
 

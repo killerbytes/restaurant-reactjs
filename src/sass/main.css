@@ -52,3 +52,10 @@ input[type=number] {
 
 .ready {
   color: green; }
+
+.nav a {
+  color: #333; }
+
+.nav .active {
+  color: #000 !important;
+  font-weight: bold; }

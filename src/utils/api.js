@@ -1,6 +1,26 @@
 import axios from "axios";
-
 import { url } from "../constants/config";
+
+
+// START USERS
+export function fetchUsers() {
+  return axios.get(`${url.api}/api/users`)
+}
+export function fetchUser(id) {
+  return axios.get(`${url.api}/api/users/${id}`)
+}
+export function createUser(table) {
+  return axios.post(`${url.api}/api/users`, table)
+}
+export function updateUser(id, table) {
+  return axios.patch(`${url.api}/api/users/${id}`, table)
+}
+export function deleteUser(id) {
+  return axios.delete(`${url.api}/api/users/${id}`)
+}
+
+// END USERS
+
 // START TABLES
 export function fetchTables() {
   return axios.get(`${url.api}/api/tables`)

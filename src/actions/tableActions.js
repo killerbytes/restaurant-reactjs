@@ -1,11 +1,11 @@
 import * as api from '../utils/api';
 
 import {
+  SHOW_ERRORS,
   INVALIDATE_TABLES,
   FETCH_TABLE_FULFILLED,
   FETCH_TABLES_FULFILLED,
   SAVE_TABLE_FULFILLED,
-  SAVE_CATEGORY_FULFILLED
 } from '../constants/actionTypes'
 
 
@@ -52,6 +52,12 @@ export function deleteTable(id) {
         type: SAVE_TABLE_FULFILLED
       })
     })
+      .catch(err => {
+        dispatch({
+          type: SHOW_ERRORS,
+          payload: err.response.data.error
+        })
+      })
   }
 }
 

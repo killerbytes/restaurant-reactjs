@@ -7,7 +7,7 @@ import Button from 'material-ui/Button'
 import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui-icons/Delete';
 
-import { fetchTable, updateTable, deleteTable } from '../../actions/tableActions'
+import { fetchUser, updateUser, deleteUser } from '../../actions/userActions'
 import Form from './Form'
 
 class EditTable extends React.Component {
@@ -29,23 +29,23 @@ class EditTable extends React.Component {
 
   handleDelete = () => {
     const { match: { params } } = this.props
-    this.props.deleteTable(params.id)
+    this.props.deleteUser(params.id)
   }
 
   handleSubmit = (form) => {
     const { match: { params } } = this.props
-    this.props.updateTable(params.id, form)
+    this.props.updateUser(params.id, form)
   }
 
   componentDidMount() {
     const { match: { params } } = this.props
-    this.props.fetchTable(params.id)
+    this.props.fetchUser(params.id)
 
   }
   render() {
-    const { tables, match: { params } } = this.props
+    const { users, match: { params } } = this.props
 
-    const item = tables.item && tables.item[params.id]
+    const item = users.item && users.item[params.id]
     return <div className="container">
       <Form item={item} onSubmit={this.handleSubmit} >
         <IconButton onClick={() => this.handleDialog('confirm_dialog', true)}><DeleteIcon /></IconButton>
@@ -78,14 +78,14 @@ class EditTable extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    fetchTable,
-    updateTable,
-    deleteTable
+    fetchUser,
+    updateUser,
+    deleteUser
   }, dispatch)
 };
 
-const mapStateToProps = ({ tables }) => ({
-  tables
+const mapStateToProps = ({ users }) => ({
+  users
 });
 
 

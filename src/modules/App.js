@@ -4,7 +4,10 @@ import { connect } from "react-redux";
 import { Switch, Route, withRouter } from 'react-router-dom'
 import { push } from 'react-router-redux';
 
+import Snackbar from 'material-ui/Snackbar';
+
 import { REDIRECT } from '../constants/actionTypes';
+import { resetError } from '../actions/commonActions'
 
 import ScrollToTop from '../components/ScrollTop'
 import AdminLayout from '../components/AdminLayout'
@@ -24,6 +27,9 @@ import CategoryEdit from './Categories/Edit'
 import Tables from "./Tables";
 import TableNew from "./Tables/New";
 import TableEdit from './Tables/Edit'
+import Users from "./Users";
+import UserNew from "./Users/New";
+import UserEdit from './Users/Edit'
 
 import AdminTransactionDetail from "./admin/Transactions/Detail";
 
@@ -44,7 +50,16 @@ function Layout({ layout, component, ...rest }) {
 
 
 class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      snackbar_dialog: false
+    }
+  }
   componentWillReceiveProps(nextProps) {
+    if (nextProps.errors && nextProps.errors.message) {
+      this.handleDialog('snackbar_dialog', true)
+    }
     if (nextProps.redirectTo) {
       if (this.props.redirectTo !== nextProps.redirectTo) {
 
@@ -54,7 +69,17 @@ class App extends React.Component {
 
     }
   }
+  handleDialog = (key, open = false) => {
+    this.setState({ [key]: open })
+  }
+
+  handleOnClose = () => {
+    this.props.resetError()
+    this.handleDialog('snackbar_dialog')
+  }
+
   render() {
+    const { errors } = this.props
     return <ScrollToTop>
 
       <Switch>
@@ -76,8 +101,21 @@ class App extends React.Component {
         <Layout layout={AdminLayout} path="/tables/new" component={TableNew} />
         <Layout layout={AdminLayout} path="/tables/:id" component={TableEdit} />
         <Layout layout={AdminLayout} exact path="/tables" component={Tables} />
+        <Layout layout={AdminLayout} path="/users/new" component={UserNew} />
+        <Layout layout={AdminLayout} path="/users/:id" component={UserEdit} />
+        <Layout layout={AdminLayout} exact path="/users" component={Users} />
 
       </Switch>
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={this.state.snackbar_dialog}
+        onClose={this.handleOnClose}
+        SnackbarContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={<span id="message-id">{errors && errors.message}</span>}
+      />
     </ScrollToTop>
 
   }
@@ -86,13 +124,15 @@ class App extends React.Component {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
     push,
+    resetError,
     onRedirect: () =>
       dispatch({ type: REDIRECT })
 
   }, dispatch)
 };
 
-const mapStateToProps = ({ common }) => ({
+const mapStateToProps = ({ common, errors }) => ({
+  errors,
   redirectTo: common.redirectTo
 });
 

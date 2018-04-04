@@ -62,6 +62,9 @@ export function fetchProductByCategories() {
         payload: res
       });
     })
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 

@@ -1,10 +1,9 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
+import { Link } from 'react-router-dom'
 
 import Button from 'material-ui/Button'
-import IconButton from 'material-ui/IconButton';
-import DeleteIcon from 'material-ui-icons/Delete';
 
 import { createTable } from "../../actions/tableActions";
 
@@ -21,7 +20,7 @@ class NewProduct extends React.Component {
   render() {
     return <div className="container">
       <Form onSubmit={this.handleSubmit}>
-        <Button variant="raised">Cancel</Button>
+        <Button variant="raised" component={Link} to="/tables">Cancel</Button>
         <Button variant="raised" color="primary" type="submit" style={{ float: 'right' }}>Save</Button>
       </Form>
     </div>

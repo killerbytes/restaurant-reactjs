@@ -4,7 +4,8 @@ import {
   INVALIDATE_CATEGORIES,
   FETCH_CATEGORIES_FULFILLED,
   FETCH_CATEGORY_FULFILLED,
-  SAVE_CATEGORY_FULFILLED
+  SAVE_CATEGORY_FULFILLED,
+  SHOW_ERRORS
 } from '../constants/actionTypes'
 
 export function fetchCategory(id) {
@@ -50,6 +51,12 @@ export function deleteCategory(id) {
         type: SAVE_CATEGORY_FULFILLED
       })
     })
+      .catch(err => {
+        dispatch({
+          type: SHOW_ERRORS,
+          payload: err.response.data.error
+        })
+      })
   }
 }
 

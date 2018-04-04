@@ -22,7 +22,6 @@ import BlockIcon from 'material-ui-icons/Block';
 import CheckIcon from 'material-ui-icons/Check';
 
 import VoidOrder from '../../../components/VoidOrder'
-import ErrorMessage from '../../../components/ErrorMessage'
 import { getCart } from '../../../actions/cartActions'
 import { createTransaction } from '../../../actions/transactionActions'
 import { saveOrderVoid } from '../../../actions/orderActions'
@@ -58,13 +57,6 @@ class Carts extends React.Component {
   componentDidMount() {
     const { match: { params }, getCart } = this.props
     getCart(params.id)
-  }
-  componentWillUpdate(nextProps) {
-    const { error } = nextProps
-    if (!error.message) {
-      // this.props.history.push('/admin/carts')
-    }
-
   }
 
   handleTextChange = (e) => {
@@ -116,7 +108,7 @@ class Carts extends React.Component {
   }
 
   render() {
-    const { carts, error, classes, match: { params } } = this.props
+    const { carts, classes, match: { params } } = this.props
     const { discount, amount } = this.state
     const cart = carts.item && carts.item[params.id]
     if (!cart) return false
@@ -161,7 +153,6 @@ class Carts extends React.Component {
       <Toolbar>
         <Typography variant="subheading">Orders</Typography>
       </Toolbar>
-      <ErrorMessage message={error.message} />
       <Paper className="mb">
         {
           mappedOrders && <Table>

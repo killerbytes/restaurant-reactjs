@@ -21,7 +21,6 @@ class Products extends React.Component {
     history.push(`/products/${item.id}`)
   }
   render() {
-    console.log('index')
     const { product } = this.props
 
     const mappedCategories = product.items.map(category => {
@@ -41,7 +40,7 @@ class Products extends React.Component {
     })
 
 
-    return <div className="container">
+    return <div>
       {mappedCategories}
 
       <Button variant="fab" component={Link} to="/products/new" style={{ position: 'fixed', zIndex: 10, bottom: '2rem', right: '2rem' }}>
