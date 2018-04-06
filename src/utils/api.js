@@ -1,60 +1,94 @@
 import axios from "axios";
 import { url } from "../constants/config";
 
+import store from '../store'
+
+const headers = () => {
+  const { getState } = store
+  const { auth } = getState()
+  const cookie = JSON.parse(localStorage.getItem('APP_INFO'))
+  const token = auth.token || cookie && cookie.token
+  return {
+    headers: {
+      ['x-access-token']: token
+    }
+  }
+
+}
+
 
 // START USERS
+export function authenticate(form) {
+  const config = Object.assign(headers(), {})
+  return axios.post(`${url.api}/api/auth`, form, config)
+}
 export function fetchUsers() {
-  return axios.get(`${url.api}/api/users`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/users`, config)
 }
 export function fetchUser(id) {
-  return axios.get(`${url.api}/api/users/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/users/${id}`, config)
 }
 export function createUser(table) {
-  return axios.post(`${url.api}/api/users`, table)
+  const config = Object.assign(headers(), {})
+  return axios.post(`${url.api}/api/users`, table, config)
 }
 export function updateUser(id, table) {
-  return axios.patch(`${url.api}/api/users/${id}`, table)
+  const config = Object.assign(headers(), {})
+  return axios.patch(`${url.api}/api/users/${id}`, table, config)
 }
 export function deleteUser(id) {
-  return axios.delete(`${url.api}/api/users/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.delete(`${url.api}/api/users/${id}`, config)
 }
 
 // END USERS
 
 // START TABLES
 export function fetchTables() {
-  return axios.get(`${url.api}/api/tables`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/tables`, config)
 }
 export function fetchTable(id) {
-  return axios.get(`${url.api}/api/tables/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/tables/${id}`, config)
 }
 export function createTable(table) {
-  return axios.post(`${url.api}/api/tables`, table)
+  const config = Object.assign(headers(), {})
+  return axios.post(`${url.api}/api/tables`, table, config)
 }
 export function updateTable(id, table) {
-  return axios.patch(`${url.api}/api/tables/${id}`, table)
+  const config = Object.assign(headers(), {})
+  return axios.patch(`${url.api}/api/tables/${id}`, table, config)
 }
 export function deleteTable(id) {
-  return axios.delete(`${url.api}/api/tables/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.delete(`${url.api}/api/tables/${id}`, config)
 }
 
 // END TABLES
 
 // START CATEGORIES
 export function fetchCategories() {
-  return axios.get(`${url.api}/api/categories`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/categories`, config)
 }
 export function fetchCategory(id) {
-  return axios.get(`${url.api}/api/categories/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/categories/${id}`, config)
 }
 export function createCategory(category) {
-  return axios.post(`${url.api}/api/categories`, category)
+  const config = Object.assign(headers(), {})
+  return axios.post(`${url.api}/api/categories`, category, config)
 }
 export function updateCategory(id, category) {
-  return axios.patch(`${url.api}/api/categories/${id}`, category)
+  const config = Object.assign(headers(), {})
+  return axios.patch(`${url.api}/api/categories/${id}`, category, config)
 }
 export function deleteCategory(id) {
-  return axios.delete(`${url.api}/api/categories/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.delete(`${url.api}/api/categories/${id}`, config)
 }
 
 
@@ -63,29 +97,31 @@ export function deleteCategory(id) {
 
 // START PRODUCTS
 export function fetchProduct(id) {
-  return axios.get(`${url.api}/api/products/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/products/${id}`, config)
 }
 export function createProduct(product) {
-  return axios.post(`${url.api}/api/products`,
-    product
-  )
+  const config = Object.assign(headers(), {})
+  return axios.post(`${url.api}/api/products`, product, config)
 }
 
 export function updateProduct(id, product) {
-  return axios.patch(`${url.api}/api/products/${id}`,
-    product
-  )
+  const config = Object.assign(headers(), {})
+  return axios.patch(`${url.api}/api/products/${id}`, product, config)
 }
 
 export function deleteProduct(id) {
-  return axios.delete(`${url.api}/api/products/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.delete(`${url.api}/api/products/${id}`, config)
 }
 
 export function fetchProducts() {
-  return axios.get(`${url.api}/api/products`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/products`, config)
 }
 export function fetchProductByCategories() {
-  return axios.get(`${url.api}/api/products/by_category`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/products/by_category`, config)
 }
 // END PRODUCTS
 
@@ -93,78 +129,91 @@ export function fetchProductByCategories() {
 
 // START CARTS
 export function fetchCart(id) {
-  return axios.get(`${url.api}/api/carts/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/carts/${id}`, config)
 }
 
 export function fetchCarts() {
-  return axios.get(`${url.api}/api/carts`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/carts`, config)
 }
 
 export function createCart(cart) {
-  return axios.post(`${url.api}/api/carts`, cart)
+  const config = Object.assign(headers(), {})
+  return axios.post(`${url.api}/api/carts`, cart, config)
 }
 
 export function changeCustomer(cart) {
+  const config = Object.assign(headers(), {})
   const { id, table_id, name } = cart
   return axios.patch(`${url.api}/api/carts/customer`, {
     cart_id: id,
     table_id,
     name
-  })
+  }, config)
 }
 export function checkout(id, is_checkout) {
+  const config = Object.assign(headers(), {})
   return axios.patch(`${url.api}/api/carts/${id}`, {
     is_checkout
-  })
+  }, config)
 }
 // END CARTS
 
 // START ORDERS
 export function fetchOrders() {
-  return axios.get(`${url.api}/api/orders`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/orders`, config)
 }
 
 export function updateOrderStatus(cart_id, order_ids, status) {
+  const config = Object.assign(headers(), {})
   return axios.patch(`${url.api}/api/orders/status`, {
     cart_id,
     order_ids,
     status
-  })
+  }, config)
 }
 
 
 export function createOrderVoid(cart_id, order_id, quantity) {
+  const config = Object.assign(headers(), {})
   return axios.patch(`${url.api}/api/orders/void`, {
     order_id,
     cart_id,
     quantity
-  })
+  }, config)
 }
 
 export function createOrders(orders, cart_id) {
+  const config = Object.assign(headers(), {})
   return axios.post(`${url.api}/api/orders`, {
     orders,
     cart_id
-  })
+  }, config)
 }
 // END ORDERS
 
 // START TRANSACTIONS
 export function fetchTransaction(id) {
-  return axios.get(`${url.api}/api/transactions/${id}`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/transactions/${id}`, config)
 }
 
 export function fetchSales() {
-  return axios.get(`${url.api}/api/sales`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/sales`, config)
 }
 
 export function fetchTransactions() {
-  return axios.get(`${url.api}/api/transactions`)
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/transactions`, config)
 }
 
 
 export function createTransaction(transaction) {
-  return axios.post(`${url.api}/api/transactions`, transaction)
+  const config = Object.assign(headers(), {})
+  return axios.post(`${url.api}/api/transactions`, transaction, config)
 }
 
 

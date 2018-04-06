@@ -6,6 +6,7 @@ import {
   SAVE_CART,
   SAVE_CART_FULFILLED,
   SAVE_CHANGE_CUSTOMER_FULFILLED,
+  FAILURE
 } from '../constants/actionTypes'
 
 import { fetchTablesIfNeeded } from './tableActions'
@@ -21,6 +22,8 @@ export function getCart(id) {
         });
       })
       .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
       })
   }
 }
@@ -34,6 +37,11 @@ export function getCarts() {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -49,6 +57,11 @@ export function moveCustomer(item) {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -57,6 +70,11 @@ export function checkoutCart(id, status = true) {
     return api.checkout(id, status).then(res => {
       return dispatch(getCart(id))
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -70,6 +88,11 @@ export function saveCart(cart) {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 

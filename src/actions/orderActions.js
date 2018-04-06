@@ -2,7 +2,8 @@ import * as api from '../utils/api';
 import {
   FETCH_ORDERS_FULFILLED,
   SAVE_ORDERS_FULFILLED,
-  UPDATE_ORDER_FULFILLED
+  UPDATE_ORDER_FULFILLED,
+  FAILURE
 } from '../constants/actionTypes'
 
 import { getCart } from '../actions/cartActions'
@@ -17,6 +18,11 @@ export function getOrders() {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -30,6 +36,11 @@ export function saveOrders(orders, cart_id) {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -43,11 +54,21 @@ export function saveOrderVoid(cart_id, order_id, quantity) {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
 export function saveOrderStatus(cart_id, order_ids, status) {
   return function (dispatch) {
     return api.updateOrderStatus(cart_id, order_ids, status)
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }

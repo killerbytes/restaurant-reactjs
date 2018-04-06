@@ -11,7 +11,6 @@ import MenuItem from './MenuItem'
 
 
 export default function Menu(props) {
-  console.log(props)
   const { product: { items }, isOpen = false, onCloseModal } = props
   const mappedMenu = items.map(category => {
     return <Grid key={category.id} item sm={6}>

@@ -1,7 +1,7 @@
 import * as api from '../utils/api';
 
 import {
-  SHOW_ERRORS,
+  FAILURE,
   INVALIDATE_TABLES,
   FETCH_TABLE_FULFILLED,
   FETCH_TABLES_FULFILLED,
@@ -18,6 +18,11 @@ export function fetchTable(id) {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -29,6 +34,11 @@ export function createTable(category) {
         type: SAVE_TABLE_FULFILLED
       })
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -41,6 +51,11 @@ export function updateTable(id, category) {
         id
       })
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -54,7 +69,7 @@ export function deleteTable(id) {
     })
       .catch(err => {
         dispatch({
-          type: SHOW_ERRORS,
+          type: FAILURE,
           payload: err.response.data.error
         })
       })
@@ -91,5 +106,9 @@ export function getTables() {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
   }
 }

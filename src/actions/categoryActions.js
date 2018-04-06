@@ -5,7 +5,7 @@ import {
   FETCH_CATEGORIES_FULFILLED,
   FETCH_CATEGORY_FULFILLED,
   SAVE_CATEGORY_FULFILLED,
-  SHOW_ERRORS
+  FAILURE
 } from '../constants/actionTypes'
 
 export function fetchCategory(id) {
@@ -17,6 +17,11 @@ export function fetchCategory(id) {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -28,6 +33,11 @@ export function createCategory(category) {
         type: SAVE_CATEGORY_FULFILLED
       })
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -40,6 +50,11 @@ export function updateCategory(id, category) {
         id
       })
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -53,7 +68,7 @@ export function deleteCategory(id) {
     })
       .catch(err => {
         dispatch({
-          type: SHOW_ERRORS,
+          type: FAILURE,
           payload: err.response.data.error
         })
       })
@@ -89,5 +104,12 @@ export function getCategories() {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({
+          type: FAILURE,
+          error
+        })
+      })
   }
 }

@@ -1,7 +1,7 @@
 import {
-  SHOW_ERRORS,
   RESET_ERRORS,
-  SAVE_TRANSACTION_FAILED
+  SAVE_TRANSACTION_FAILED,
+  FAILURE
 } from "../constants/actionTypes";
 
 const initialState = null
@@ -11,12 +11,11 @@ export default function reducer(
 ) {
 
   switch (action.type) {
+    case FAILURE: 
+      return {...state, ...action.error}
     case RESET_ERRORS:
       return { state };
     case SAVE_TRANSACTION_FAILED:
-    case SHOW_ERRORS: {
-      return { ...state, ...action.payload };
-    }
     default:
       return state;
   }

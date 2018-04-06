@@ -1,4 +1,4 @@
-import { INVALIDATE_PRODUCTS, FETCH_PRODUCT, FETCH_PRODUCT_FULFILLED, FETCH_PRODUCTS, FETCH_PRODUCTS_FULFILLED, SAVE_PRODUCT_FULFILLED } from "../constants/actionTypes";
+import { FAILURE, INVALIDATE_PRODUCTS, FETCH_PRODUCT, FETCH_PRODUCT_FULFILLED, FETCH_PRODUCTS, FETCH_PRODUCTS_FULFILLED, SAVE_PRODUCT_FULFILLED } from "../constants/actionTypes";
 import * as api from '../utils/api'
 
 export function createProduct(product) {
@@ -9,6 +9,11 @@ export function createProduct(product) {
         type: SAVE_PRODUCT_FULFILLED
       })
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -21,6 +26,11 @@ export function updateProduct(id, product) {
         id
       })
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -32,6 +42,11 @@ export function deleteProduct(id) {
         type: SAVE_PRODUCT_FULFILLED
       })
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -63,7 +78,8 @@ export function fetchProductByCategories() {
       });
     })
       .catch(err => {
-        console.log(err)
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
       })
   }
 }
@@ -77,6 +93,11 @@ export function fetchProduct(id) {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 

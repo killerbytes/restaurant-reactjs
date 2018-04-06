@@ -138,7 +138,6 @@ class Cart extends React.Component {
 
   render() {
     const { carts, product, tables, match: { params } } = this.props
-    console.log(this.props)
     const { orders } = this.state
     const item = carts.item && carts.item[params.id]
     if (!item) return false

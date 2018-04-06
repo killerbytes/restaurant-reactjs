@@ -6,7 +6,8 @@ import {
   SAVE_TRANSACTION_FAILED,
   FETCH_TRANSACTION_FULFILLED,
   FETCH_TRANSACTIONS_FULFILLED,
-  FETCH_SALES_FULFILLED
+  FETCH_SALES_FULFILLED,
+  FAILURE
 } from '../constants/actionTypes'
 
 export function fetchTransaction(id) {
@@ -20,6 +21,8 @@ export function fetchTransaction(id) {
         });
       })
       .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
       })
   }
 }
@@ -33,6 +36,11 @@ export function fetchTransactions() {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -45,6 +53,11 @@ export function fetchSales() {
         payload: res
       });
     })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
@@ -57,12 +70,12 @@ export function createTransaction(transaction) {
           type: SAVE_TRANSACTION_FULFILLED,
           payload: res
         });
-      }, err => {
-        return dispatch({
-          type: SAVE_TRANSACTION_FAILED,
-          payload: err.message || 'Something went wrong'
-        })
       })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
   }
 }
 
