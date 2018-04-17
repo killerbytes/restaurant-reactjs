@@ -3,23 +3,15 @@ import { Field, reduxForm } from 'redux-form'
 import { connect } from "react-redux";
 
 import { withStyles } from 'material-ui/styles';
-import TextField from 'material-ui/TextField';
 import Card, { CardContent } from 'material-ui/Card';
+import { TextInput } from '../../components/Input'
 
 const styles = theme => ({
-  container: {
+  actionField: {
+    marginTop: '1rem',
     display: 'flex',
-    flexWrap: 'wrap',
-    marginLeft: -theme.spacing.unit,
-    marginRight: -theme.spacing.unit,
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    flex: 1
-  },
-  menu: {
-    width: 200,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
 });
 
@@ -34,14 +26,6 @@ const validate = values => {
   return errors
 }
 
-const TextInput = ({ input, label, name, meta: { touched, error }, children, ...custom }) => {
-  return <TextField
-    error={!!touched && !!error}
-    label={label}
-    margin="normal"
-    {...input}
-    {...custom}>{children}</TextField>
-}
 
 
 let Form = ({ classes, categories, onSubmit, handleSubmit, submitting, children }) => {
@@ -49,7 +33,9 @@ let Form = ({ classes, categories, onSubmit, handleSubmit, submitting, children 
     <CardContent className="mb">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Field component={TextInput} label="Name" name="name" fullWidth />
-        {children}
+        <div className={classes.actionField}>
+          {children}
+        </div>
       </form>
     </CardContent>
   </Card>

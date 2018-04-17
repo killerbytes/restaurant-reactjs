@@ -5,27 +5,8 @@ import {
   INVALIDATE_USERS,
   FETCH_USER_FULFILLED,
   FETCH_USERS_FULFILLED,
-  SAVE_USER_FULFILLED,
-  SET_TOKEN,
-  USER_LOGIN_SUCCESS
+  SAVE_USER_FULFILLED
 } from '../constants/actionTypes'
-
-export function authenticate(form) {
-  return function (dispatch) {
-    return api.authenticate(form).then(res => {
-      localStorage.setItem('APP_INFO', JSON.stringify(res.data))
-      dispatch({ type: SET_TOKEN, payload: res })
-      return dispatch({ type: USER_LOGIN_SUCCESS })
-    })
-      .catch(err => {
-        const { error } = err.response.data
-        dispatch({
-          type: FAILURE,
-          error
-        })
-      })
-  }
-}
 
 export function fetchUser(id) {
   return function (dispatch) {

@@ -7,8 +7,8 @@ import currency from 'currency.js'
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
-import Box from '../../../components/Box'
-import { fetchTransaction } from '../../../actions/transactionActions'
+import Box from '../../components/Box'
+import { fetchTransaction } from '../../actions/transactionActions'
 
 class Transactions extends React.Component {
   componentDidMount() {

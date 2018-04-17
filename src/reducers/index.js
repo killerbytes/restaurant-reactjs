@@ -9,6 +9,7 @@ import carts from "./cart";
 import orders from "./order";
 import transaction from "./transaction";
 import sales from "./sales";
+import roles from "./roles";
 import product from "./product";
 import navigation from "./navigation";
 import errors from "./error";
@@ -23,6 +24,7 @@ export default combineReducers({
   orders,
   transaction,
   sales,
+  roles,
   product,
   navigation,
   errors,

@@ -4,13 +4,17 @@ import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 
 import AdminNav from '../components/AdminNav'
+import Profile from '../components/Profile'
+
 export default class AdminLayout extends React.Component {
   render() {
     return (
       <div className="container">
         <AppBar>
           <Toolbar>
-            <Typography variant="title">Admin</Typography>
+            <Typography variant="title" style={{ flex: 1 }}>Admin</Typography>
+            <Profile />
+
           </Toolbar>
         </AppBar>
 

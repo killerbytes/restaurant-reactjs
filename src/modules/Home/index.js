@@ -8,6 +8,7 @@ import NavigationCheck from 'material-ui-icons/Check';
 import IconButton from 'material-ui/IconButton';
 import Button from 'material-ui/Button';
 import ActionHome from 'material-ui-icons/Home';
+import ContentAdd from 'material-ui-icons/Add';
 
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
 import { fetchTablesIfNeeded } from '../../actions/tableActions'
@@ -17,6 +18,7 @@ import { fetchProductsIfNeeded } from '../../actions/productActions'
 import Menu from '../../components/Menu'
 import TablePicker from '../../components/TablePicker'
 import Orders from '../../components/Orders'
+import Profile from '../../components/Profile'
 
 import { url } from '../../constants/config'
 import io from 'socket.io-client'
@@ -79,7 +81,7 @@ class Home extends React.Component {
   handleTableItem = (item, cart) => {
     const { orders } = this.state
     if (cart) {
-      this.props.history.push(`/carts/${cart.id}`)
+      this.props.history.push(`/orders/${cart.id}`)
     }
     else {
       this.setState({
@@ -139,7 +141,7 @@ class Home extends React.Component {
           <Typography variant="title" style={{ flex: 1 }}>
             {table.name || 'Orders'}
           </Typography>
-          <Button onClick={() => this.handleDialog('menu_dialog', true)}>Menu</Button>
+          <Profile />
         </Toolbar>
       </AppBar>
       <div className="main bg">
@@ -174,6 +176,9 @@ class Home extends React.Component {
         onClickItem={this.handleMenuItem}
         product={product} />
 
+      <Button variant="fab" onClick={() => this.handleDialog('menu_dialog', true)} style={{ position: 'fixed', bottom: '2rem', left: '2rem' }}>
+        <ContentAdd />
+      </Button>
 
     </div>
   }

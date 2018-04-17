@@ -21,11 +21,11 @@ import ExpandMore from 'material-ui-icons/ExpandMore';
 import BlockIcon from 'material-ui-icons/Block';
 import CheckIcon from 'material-ui-icons/Check';
 
-import VoidOrder from '../../../components/VoidOrder'
-import { getCart } from '../../../actions/cartActions'
-import { createTransaction } from '../../../actions/transactionActions'
-import { saveOrderVoid } from '../../../actions/orderActions'
-import { getTotals } from '../../../utils'
+import VoidOrder from '../../components/VoidOrder'
+import { getCart } from '../../actions/cartActions'
+import { createTransaction } from '../../actions/transactionActions'
+import { saveOrderVoid } from '../../actions/orderActions'
+import { getTotals } from '../../utils'
 
 const styles = theme => ({
   root: {

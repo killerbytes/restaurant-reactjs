@@ -2,17 +2,25 @@ import React from "react";
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
 import shortid from "shortid";
+import { format } from 'date-fns'
 
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import ListSubheader from 'material-ui/List/ListSubheader';
+import TextField from 'material-ui/TextField';
 
-import { fetchSales } from '../../../actions/transactionActions'
-import { fetchCategoriesIfNeeded } from '../../../actions/categoryActions'
+import { fetchSales } from '../../actions/transactionActions'
+import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
 class Sales extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      date: format(new Date, 'YYYY-MM-DD')
+    }
+  }
   componentDidMount() {
     this.props.fetchCategoriesIfNeeded()
-    this.props.fetchSales()
+    this.props.fetchSales(this.state.date)
   }
   render() {
     const { sales, categories } = this.props
@@ -65,7 +73,17 @@ class Sales extends React.Component {
     })
 
     return <div>
-
+      <form noValidate>
+        <TextField
+          id="date"
+          label="Birthday"
+          type="date"
+          value={this.state.date}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      </form>
       {mappedSales}
 
 

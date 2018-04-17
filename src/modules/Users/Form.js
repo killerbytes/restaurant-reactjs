@@ -3,29 +3,23 @@ import { Field, reduxForm } from 'redux-form'
 import { connect } from "react-redux";
 
 import { withStyles } from 'material-ui/styles';
-import TextField from 'material-ui/TextField';
-import Card, { CardContent } from 'material-ui/Card';
+import { MenuItem } from 'material-ui/Menu';
+
+import { TextInput, SelectInput } from '../../components/Input'
 
 const styles = theme => ({
-  container: {
+  actionField: {
+    marginTop: '1rem',
     display: 'flex',
-    flexWrap: 'wrap',
-    marginLeft: -theme.spacing.unit,
-    marginRight: -theme.spacing.unit,
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    flex: 1
-  },
-  menu: {
-    width: 200,
-  },
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  }
+
 });
 
 const validate = values => {
   const errors = {}
-  const requiredFields = ['name', 'username', 'password', 'email']
+  const requiredFields = ['name', 'username', 'role']
   requiredFields.forEach(field => {
     if (!values[field]) {
       errors[field] = 'Required'
@@ -34,31 +28,27 @@ const validate = values => {
   if (values.email && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
     errors.email = 'Invalid email address'
   }
+  if (values.password !== values.confirm_password) {
+    errors.confirm_password = 'Password does not match'
+  }
   return errors
 }
 
-const TextInput = ({ input, label, name, meta: { touched, error }, children, ...custom }) => {
-  return <TextField
-    error={!!touched && !!error}
-    label={label}
-    margin="normal"
-    {...input}
-    {...custom}>{children}</TextField>
-}
 
 
-let Form = ({ classes, categories, onSubmit, handleSubmit, submitting, children }) => {
-  return <Card>
-    <CardContent className="mb">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Field component={TextInput} label="Username" name="username" fullWidth />
-        <Field component={TextInput} label="Name" name="name" fullWidth />
-        <Field component={TextInput} label="Email" name="email" fullWidth />
-        <Field type="password" component={TextInput} label="Password" name="password" fullWidth />
-        {children}
-      </form>
-    </CardContent>
-  </Card>
+let Form = ({ classes, isNew, roles, onSubmit, handleSubmit, submitting, children }) => {
+  const mappedRoles = roles.items.map(role => {
+    return <MenuItem key={role.id} name="role" value={role.name}>{role.name}</MenuItem>
+  })
+
+  return <form onSubmit={handleSubmit(onSubmit)}>
+    <Field component={TextInput} label="Username" name="username" fullWidth />
+    <Field component={TextInput} label="Name" name="name" fullWidth />
+    <Field fullWidth component={SelectInput} label="Role" name="role" children={mappedRoles} />
+    <div className={classes.actionField}>
+      {children}
+    </div>
+  </form>
 }
 
 Form = withStyles(styles)(Form)

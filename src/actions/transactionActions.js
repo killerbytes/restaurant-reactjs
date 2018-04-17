@@ -3,7 +3,6 @@ import * as api from '../utils/api';
 import {
   SAVE_TRANSACTION,
   SAVE_TRANSACTION_FULFILLED,
-  SAVE_TRANSACTION_FAILED,
   FETCH_TRANSACTION_FULFILLED,
   FETCH_TRANSACTIONS_FULFILLED,
   FETCH_SALES_FULFILLED,
@@ -44,10 +43,10 @@ export function fetchTransactions() {
   }
 }
 
-export function fetchSales() {
+export function fetchSales(date) {
   return function (dispatch) {
 
-    return api.fetchSales().then(res => {
+    return api.fetchSales(date).then(res => {
       return dispatch({
         type: FETCH_SALES_FULFILLED,
         payload: res

@@ -6,8 +6,11 @@ import Dialog, { DialogActions, DialogContent, DialogContentText } from 'materia
 import Button from 'material-ui/Button'
 import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui-icons/Delete';
+import Card, { CardContent } from 'material-ui/Card';
+import { Link } from 'react-router-dom'
 
 import { fetchUser, updateUser, deleteUser } from '../../actions/userActions'
+import { getRoles } from '../../actions/roleActions'
 import Form from './Form'
 
 class EditTable extends React.Component {
@@ -40,19 +43,24 @@ class EditTable extends React.Component {
   componentDidMount() {
     const { match: { params } } = this.props
     this.props.fetchUser(params.id)
+    this.props.getRoles()
 
   }
   render() {
-    const { users, match: { params } } = this.props
+    const { roles, users, match: { params } } = this.props
 
     const item = users.item && users.item[params.id]
     return <div className="container">
-      <Form item={item} onSubmit={this.handleSubmit} >
-        <IconButton onClick={() => this.handleDialog('confirm_dialog', true)}><DeleteIcon /></IconButton>
-        <Button variant="raised" color="primary" type="submit" style={{ float: 'right' }}>
-          Save
-        </Button>
-      </Form>
+      <Card>
+        <CardContent>
+          <Form item={item} roles={roles} onSubmit={this.handleSubmit} >
+            <IconButton onClick={() => this.handleDialog('confirm_dialog', true)}><DeleteIcon /></IconButton>
+            <Button component={Link} to="/users" style={{ marginLeft: 'auto' }}>Cancel</Button>
+            <Button variant="raised" color="primary" type="submit">Update</Button>
+          </Form>
+        </CardContent>
+      </Card>
+
 
       <Dialog
         open={this.state.confirm_dialog}
@@ -80,12 +88,14 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators({
     fetchUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getRoles
   }, dispatch)
 };
 
-const mapStateToProps = ({ users }) => ({
-  users
+const mapStateToProps = ({ users, roles }) => ({
+  users,
+  roles
 });
 
 

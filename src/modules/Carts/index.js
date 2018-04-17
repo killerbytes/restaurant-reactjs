@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton';
 
 
 
-import { getCarts } from '../../../actions/cartActions'
+import { getCarts } from '../../actions/cartActions'
 
 
 class Carts extends React.Component {
@@ -18,7 +18,7 @@ class Carts extends React.Component {
     this.props.getCarts()
   }
   handleItemClick = (item) => {
-    this.props.history.push(`/admin/carts/${item.id}`)
+    this.props.history.push(`/carts/${item.id}`)
   }
   render() {
     const { carts } = this.props

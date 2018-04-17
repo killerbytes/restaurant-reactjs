@@ -7,10 +7,6 @@ import Paper from 'material-ui/Paper';
 import { MenuList, MenuItem } from 'material-ui/Menu';
 import IconButton from 'material-ui/IconButton';
 import Badge from 'material-ui/Badge';
-import Collapse from 'material-ui/transitions/Collapse';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import ExpandLess from 'material-ui-icons/ExpandLess';
-import ExpandMore from 'material-ui-icons/ExpandMore';
 import { getCarts } from '../actions/cartActions'
 import io from 'socket.io-client'
 import { url } from '../constants/config'
@@ -20,9 +16,6 @@ const socket = io(url.api)
 class AdminNav extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      open: false
-    }
     socket.on('server_message', action => {
       switch (action.type) {
         case 'GET_CARTS':
@@ -34,10 +27,6 @@ class AdminNav extends React.Component {
     })
 
   }
-  handleDialog = (key, open = false) => {
-    console.log()
-    this.setState({ [key]: open })
-  }
   handleNavigate = (route) => {
     this.props.history.push(route)
   }
@@ -47,27 +36,15 @@ class AdminNav extends React.Component {
       return item.is_checkout
     })
     return <Paper className="nav" style={{ minWidth: '200px' }}>
-      <List>
-        <ListItem button onClick={() => this.handleDialog('open', !this.state.open)}>
-          <ListItemText primary="Inbox" />
-          {this.state.open ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-      </List>
-
-      <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-        <MenuList>
-
-          <MenuItem onClick={() => this.handleNavigate('/users')}><NavLink to="/users" activeClassName="active">Users</NavLink></MenuItem>
-          <MenuItem onClick={() => this.handleNavigate('/products')}><NavLink to="/products" activeClassName="active">Products</NavLink></MenuItem>
-          <MenuItem onClick={() => this.handleNavigate('/categories')}><NavLink to="/categories" activeClassName="active">Categories</NavLink></MenuItem>
-          <MenuItem onClick={() => this.handleNavigate('/tables')}><NavLink to="/tables" activeClassName="active">Tables</NavLink></MenuItem>
-        </MenuList>
-      </Collapse>
-
       <MenuList>
 
-        <MenuItem onClick={() => this.handleNavigate('/admin/carts')}>
-          <NavLink to="/admin/carts" activeClassName="active">Carts</NavLink>
+        <MenuItem onClick={() => this.handleNavigate('/users')}><NavLink to="/users" activeClassName="active">Users</NavLink></MenuItem>
+        <MenuItem onClick={() => this.handleNavigate('/products')}><NavLink to="/products" activeClassName="active">Products</NavLink></MenuItem>
+        <MenuItem onClick={() => this.handleNavigate('/categories')}><NavLink to="/categories" activeClassName="active">Categories</NavLink></MenuItem>
+        <MenuItem onClick={() => this.handleNavigate('/tables')}><NavLink to="/tables" activeClassName="active">Tables</NavLink></MenuItem>
+
+        <MenuItem onClick={() => this.handleNavigate('/carts')}>
+          <NavLink to="/carts" activeClassName="active">Carts</NavLink>
           <IconButton aria-label="Comments">
             {
               !!checkout.length && <Badge badgeContent={checkout.length} color="primary">
@@ -76,7 +53,8 @@ class AdminNav extends React.Component {
             }
           </IconButton>
         </MenuItem>
-        <MenuItem onClick={() => this.handleNavigate('/admin/transactions')}><NavLink to="/admin/transactions" activeClassName="active">Transactions</NavLink></MenuItem>
+        <MenuItem onClick={() => this.handleNavigate('/transactions')}><NavLink to="/transactions" activeClassName="active">Transactions</NavLink></MenuItem>
+        <MenuItem onClick={() => this.handleNavigate('/sales')}><NavLink to="/sales" activeClassName="active">Sales</NavLink></MenuItem>
       </MenuList>
     </Paper>
 

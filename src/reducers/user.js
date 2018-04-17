@@ -1,8 +1,5 @@
 import {
   INVALIDATE_USERS,
-  AUTHENTICATE_USER_SUCCESS,
-  LOGOUT_USER,
-  SET_TOKEN,
   FETCH_USERS,
   FETCH_USER_FULFILLED,
   FETCH_USERS_FULFILLED
@@ -21,9 +18,6 @@ export default function reducer(
   switch (action.type) {
     case INVALIDATE_USERS:
       return { ...state, didInvalidate: true };
-    case LOGOUT_USER: {
-      return { ...state, token: null, me: null };
-    }
     case FETCH_USER_FULFILLED: {
       return { ...state, item: { [action.payload.data.id]: action.payload.data } };
     }

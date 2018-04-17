@@ -15,6 +15,7 @@ import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 
 import { getCarts } from "../../actions/cartActions";
 import { saveOrderStatus } from "../../actions/orderActions";
+import Profile from '../../components/Profile'
 
 import { url } from '../../constants/config'
 import io from 'socket.io-client'
@@ -120,7 +121,7 @@ class Kitchen extends React.Component {
           <Typography variant="title" style={{ flex: 1 }}>
             Kitchen
           </Typography>
-          <Button onClick={() => this.handleDialog('menu_dialog', true)}>Menu</Button>
+          <Profile />
         </Toolbar>
       </AppBar>
       <div className="main bg" style={{ overflow: 'auto' }}>

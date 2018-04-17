@@ -7,20 +7,29 @@ const headers = () => {
   const { getState } = store
   const { auth } = getState()
   const cookie = JSON.parse(localStorage.getItem('APP_INFO'))
-  const token = auth.token || cookie && cookie.token
+  const token = auth.token || (cookie && cookie.token)
   return {
     headers: {
-      ['x-access-token']: token
+      'x-access-token': token
     }
   }
 
 }
-
+// START ROLES
+export function getRoles() {
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/roles`, config)
+}
+// END ROLES
 
 // START USERS
 export function authenticate(form) {
   const config = Object.assign(headers(), {})
   return axios.post(`${url.api}/api/auth`, form, config)
+}
+export function getProfile() {
+  const config = Object.assign(headers(), {})
+  return axios.get(`${url.api}/api/users/profile`, config)
 }
 export function fetchUsers() {
   const config = Object.assign(headers(), {})
@@ -200,8 +209,8 @@ export function fetchTransaction(id) {
   return axios.get(`${url.api}/api/transactions/${id}`, config)
 }
 
-export function fetchSales() {
-  const config = Object.assign(headers(), {})
+export function fetchSales(date) {
+  const config = Object.assign(headers(), { params: { date } })
   return axios.get(`${url.api}/api/sales`, config)
 }
 

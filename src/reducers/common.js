@@ -6,7 +6,8 @@ import {
   SAVE_PRODUCT_FULFILLED,
   SAVE_TRANSACTION_FULFILLED,
   SAVE_USER_FULFILLED,
-  USER_LOGIN_SUCCESS
+  USER_LOGIN_SUCCESS,
+  USER_LOGOUT_SUCCESS
 } from "../constants/actionTypes";
 
 export default function reducer(
@@ -22,6 +23,7 @@ export default function reducer(
       let redirectTo = null
       switch (action.error.status) {
         case 401:
+        case 404:
           localStorage.setItem('APP_INFO', null)
           redirectTo = `/login`
           break;
@@ -30,8 +32,23 @@ export default function reducer(
       }
 
       return { ...state, redirectTo }
+    case USER_LOGOUT_SUCCESS: {
+      const redirectTo = `/login`
+      return { ...state, redirectTo }
+    }
     case USER_LOGIN_SUCCESS: {
-      const redirectTo = `/`
+      let redirectTo = null
+      switch (action.payload.role) {
+        case 'manager':
+          redirectTo = '/products'
+          break;
+        case 'kitchen':
+          redirectTo = '/kitchen'
+          break;
+        default:
+          redirectTo = '/'
+          break;
+      }
       return { ...state, redirectTo }
     }
     case SAVE_USER_FULFILLED: {
@@ -51,7 +68,7 @@ export default function reducer(
       return { ...state, redirectTo }
     }
     case SAVE_TRANSACTION_FULFILLED: {
-      const redirectTo = `/admin/carts`
+      const redirectTo = `/carts`
       return { ...state, redirectTo };
     }
     default:

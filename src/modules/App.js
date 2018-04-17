@@ -12,12 +12,12 @@ import { resetError } from '../actions/commonActions'
 import ScrollToTop from '../components/ScrollTop'
 import AdminLayout from '../components/AdminLayout'
 import Home from "./Home";
-import Cart from "./Cart";
+import Orders from "./Orders";
 import Kitchen from "./Kitchen";
-import AdminCartList from "./admin/Carts";
-import AdminCartDetail from "./admin/Carts/Detail";
-import AdminTransactions from "./admin/Transactions";
-import Sales from "./admin/Transactions/Sales";
+import AdminCartList from "./Carts";
+import AdminCartDetail from "./Carts/Detail";
+import AdminTransactions from "./Transactions";
+import Sales from "./Transactions/Sales";
 import Products from "./Products";
 import ProductNew from "./Products/New";
 import ProductEdit from './Products/Edit'
@@ -32,7 +32,7 @@ import UserNew from "./Users/New";
 import UserEdit from './Users/Edit'
 import Login from './Users/Login'
 
-import AdminTransactionDetail from "./admin/Transactions/Detail";
+import AdminTransactionDetail from "./Transactions/Detail";
 
 function Layout({ layout, component, ...rest }) {
   return (
@@ -86,13 +86,14 @@ class App extends React.Component {
       <Switch>
 
         <Route exact path="/" component={Home} />
-        <Route path="/carts/:id" component={Cart} />
+        <Route path="/login" component={Login} />
+        <Route path="/orders/:id" component={Orders} />
         <Route path="/kitchen" component={Kitchen} />
-        <Layout layout={AdminLayout} path="/admin/carts/:id" component={AdminCartDetail} />
-        <Layout layout={AdminLayout} path="/admin/carts" component={AdminCartList} />
-        <Layout layout={AdminLayout} path="/admin/transactions/:id" component={AdminTransactionDetail} />
-        <Layout layout={AdminLayout} path="/admin/transactions" component={AdminTransactions} />
-        <Layout layout={AdminLayout} path="/admin/sales" component={Sales} />
+        <Layout layout={AdminLayout} path="/carts/:id" component={AdminCartDetail} />
+        <Layout layout={AdminLayout} path="/carts" component={AdminCartList} />
+        <Layout layout={AdminLayout} path="/transactions/:id" component={AdminTransactionDetail} />
+        <Layout layout={AdminLayout} path="/transactions" component={AdminTransactions} />
+        <Layout layout={AdminLayout} path="/sales" component={Sales} />
         <Layout layout={AdminLayout} path="/products/new" component={ProductNew} />
         <Layout layout={AdminLayout} path="/products/:id" component={ProductEdit} />
         <Layout layout={AdminLayout} exact path="/products" component={Products} />
@@ -105,7 +106,6 @@ class App extends React.Component {
         <Layout layout={AdminLayout} path="/users/new" component={UserNew} />
         <Layout layout={AdminLayout} path="/users/:id" component={UserEdit} />
         <Layout layout={AdminLayout} exact path="/users" component={Users} />
-        <Layout layout={AdminLayout} exact path="/login" component={Login} />
 
       </Switch>
 

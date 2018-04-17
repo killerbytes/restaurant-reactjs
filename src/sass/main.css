@@ -5,6 +5,9 @@ body {
 .mb {
   margin-bottom: 1rem; }
 
+.mt {
+  margin-top: 1rem; }
+
 .container {
   min-height: 100vh;
   background-color: #edecec;
@@ -32,6 +35,9 @@ body {
 
 a {
   text-decoration: none; }
+
+a + button {
+  margin-left: 1rem !important; }
 
 .box {
   margin-bottom: 1rem;

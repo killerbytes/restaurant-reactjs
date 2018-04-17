@@ -1,6 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
+import { Link } from 'react-router-dom'
 
 import Dialog, { DialogActions, DialogContent, DialogContentText } from 'material-ui/Dialog';
 import Button from 'material-ui/Button'
@@ -49,9 +50,11 @@ class EditTable extends React.Component {
     return <div className="container">
       <Form item={item} onSubmit={this.handleSubmit} >
         <IconButton onClick={() => this.handleDialog('confirm_dialog', true)}><DeleteIcon /></IconButton>
+        <Button component={Link} to="/products" style={{ marginLeft: 'auto' }}>Cancel</Button>
         <Button variant="raised" color="primary" type="submit" style={{ float: 'right' }}>
           Save
         </Button>
+
       </Form>
 
       <Dialog

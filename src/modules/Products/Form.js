@@ -3,28 +3,19 @@ import { Field, reduxForm } from 'redux-form'
 import { connect } from "react-redux";
 
 import { withStyles } from 'material-ui/styles';
-import TextField from 'material-ui/TextField';
-import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
 import Card, { CardContent } from 'material-ui/Card';
-import { FormControl } from 'material-ui/Form';
-import { InputLabel } from 'material-ui/Input';
+
+import { TextInput, SelectInput } from '../../components/Input'
 
 const styles = theme => ({
-  container: {
+  actionField: {
+    marginTop: '1rem',
     display: 'flex',
-    flexWrap: 'wrap',
-    marginLeft: -theme.spacing.unit,
-    marginRight: -theme.spacing.unit,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    flex: 1
-  },
-  menu: {
-    width: 200,
-  },
+
 });
 
 const validate = values => {
@@ -41,31 +32,7 @@ const validate = values => {
   return errors
 }
 
-const TextInput = ({ input, label, name, meta: { touched, error }, children, ...custom }) => {
-  return <TextField
-    error={!!touched && !!error}
-    label={label}
-    margin="normal"
-    {...input}
-    {...custom}>{children}</TextField>
-}
 
-const SelectInput = ({ input, label, meta: { touched, error }, children, ...custom }) => {
-  return <FormControl
-    margin="normal"
-    {...custom}
-
-  >
-    <InputLabel htmlFor="age-simple">{label}</InputLabel>
-    <Select
-      error={!!touched && !!error}
-      {...input}
-    >
-      {children}
-    </Select>
-  </FormControl>
-
-}
 
 let Form = ({ classes, categories, onSubmit, handleSubmit, submitting, children }) => {
   const mappedCategories = categories.items.map(category => {
@@ -76,12 +43,12 @@ let Form = ({ classes, categories, onSubmit, handleSubmit, submitting, children 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Field component={TextInput} label="Name" name="name" fullWidth />
         <Field component={TextInput} label="Description" name="description" fullWidth />
-        <div className={classes.container}>
-
-          <Field className={classes.textField} component={TextInput} label="Unit Price" name="price" type="number" />
-          <Field className={classes.textField} component={SelectInput} label="Category" name="category_id" children={mappedCategories} />
+        <Field fullWidth component={TextInput} label="Unit Price" name="price" type="number" />
+        <Field fullWidth component={SelectInput} label="Category" name="category_id" children={mappedCategories} />
+        <div className={classes.actionField}>
+          {children}
         </div>
-        {children}
+
       </form>
     </CardContent>
   </Card>

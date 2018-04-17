@@ -4,10 +4,11 @@ import { connect } from "react-redux";
 import { Link } from 'react-router-dom'
 
 import Button from 'material-ui/Button'
+import Card, { CardContent } from 'material-ui/Card';
 
 import { createUser } from "../../actions/userActions";
 
-import Form from './Form'
+import NewForm from './NewForm'
 
 
 
@@ -19,10 +20,15 @@ class NewProduct extends React.Component {
 
   render() {
     return <div className="container">
-      <Form onSubmit={this.handleSubmit}>
-        <Button variant="raised" component={Link} to="/tables">Cancel</Button>
-        <Button variant="raised" color="primary" type="submit" style={{ float: 'right' }}>Save</Button>
-      </Form>
+      <Card>
+        <CardContent>
+          <NewForm isNew onSubmit={this.handleSubmit}>
+            <Button component={Link} to="/users">Cancel</Button>
+            <Button variant="raised" color="primary" type="submit">Save</Button>
+          </NewForm>
+        </CardContent>
+      </Card>
+
     </div>
   }
 

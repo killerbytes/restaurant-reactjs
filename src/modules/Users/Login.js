@@ -5,10 +5,10 @@ import { bindActionCreators } from 'redux'
 
 import { withStyles } from 'material-ui/styles';
 import TextField from 'material-ui/TextField';
-import Card, { CardContent } from 'material-ui/Card';
+import Card, { CardMedia, CardContent } from 'material-ui/Card';
 import Button from 'material-ui/Button'
 
-import { authenticate } from '../../actions/userActions'
+import { authenticate } from '../../actions/authActions'
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -20,6 +20,11 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
     flex: 1
+  },
+  media: {
+    marginTop: 20,
+    height: 200,
+    backgroundSize: 'contain'
   },
   menu: {
     width: 200,
@@ -55,16 +60,22 @@ class Login extends React.Component {
     this.props.authenticate(form)
   }
   render() {
-    const { handleSubmit, submitting, children } = this.props
-    return <Card>
-      <CardContent className="mb">
-        <form onSubmit={handleSubmit(this.handleSubmit)}>
-          <Field component={TextInput} label="Username" name="username" fullWidth />
-          <Field type="password" component={TextInput} label="Password" name="password" fullWidth />
-          <Button type="submit">Submit</Button>
-        </form>
-      </CardContent>
-    </Card>
+    const { handleSubmit, classes } = this.props
+    return <div className="container" style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Card>
+        <CardMedia
+          className={classes.media}
+          image="/images/bg.jpg"
+        />
+        <CardContent className="mb">
+          <form onSubmit={handleSubmit(this.handleSubmit)}>
+            <Field component={TextInput} label="Username" name="username" fullWidth />
+            <Field type="password" component={TextInput} label="Password" name="password" fullWidth />
+            <Button variant="raised" size="large" type="submit" color="primary" style={{ width: '100%' }}>Submit</Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   }
 }
 
@@ -76,7 +87,7 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = ({ item }) => {
   return ({
-    initialValues: { username: 'ironman', password: 'test' }
+    initialValues: { username: 'superman', password: 'test' }
   });
 }
 

@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
 
 import Button from 'material-ui/Button'
+import { Link } from 'react-router-dom'
 
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
 import { createProduct } from "../../actions/productActions";
@@ -24,8 +25,11 @@ class NewProduct extends React.Component {
     const { categories, } = this.props
     return <div className="container">
       <Form categories={categories} onSubmit={this.handleSubmit}>
-        <Button >Cancel</Button>
-        <Button type="submit">Save</Button>
+        <Button component={Link} to="/products" style={{ marginLeft: 'auto' }}>Cancel</Button>
+        <Button variant="raised" color="primary" type="submit" style={{ float: 'right' }}>
+          Save
+        </Button>
+
       </Form>
     </div>
   }
