@@ -1,11 +1,13 @@
 import React from "react";
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
-import { format } from 'date-fns'
 import currency from 'currency.js'
+import { format, endOfMonth, isValid } from 'date-fns'
 
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import Card, { CardActions, CardContent } from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
 
 
 import Box from '../../components/Box'
@@ -13,8 +15,37 @@ import { fetchTransactions } from '../../actions/transactionActions'
 import { getTransactionTotals } from '../../utils/index'
 
 class Transactions extends React.Component {
+  constructor(props) {
+    super(props)
+    let today = new Date();
+    this.state = {
+      startDate: format(today, 'YYYY-MM-DD'),
+      endDate: format(endOfMonth(today), 'YYYY-MM-DD')
+    }
+  }
+  handleStartDateChange = (e) => {
+    let date = format(e.target.value, 'YYYY-MM-DD')
+    this.setState({
+      startDate: date,
+      endDate: format(endOfMonth(date), 'YYYY-MM-DD')
+    }, () => {
+      this.handleFetchTransactions()
+    })
+  }
+  handleEndDateChange = (e) => {
+    this.setState({
+      endDate: format(e.target.value, 'YYYY-MM-DD')
+    }, () => {
+      this.handleFetchTransactions()
+    })
+  }
+  handleFetchTransactions = () => {
+    const startDate = new Date(this.state.startDate)
+    const endDate = new Date(this.state.endDate)
+    this.props.fetchTransactions({ startDate: startDate.getTime(), endDate: endDate.getTime() })
+  }
   componentDidMount() {
-    this.props.fetchTransactions()
+    this.handleFetchTransactions()
   }
   navigate = (item) => {
     this.props.history.push(`/transactions/${item.id}`)
@@ -33,6 +64,35 @@ class Transactions extends React.Component {
 
     return <div>
       <h1>Transactions</h1>
+      <Card className="mb">
+        <CardContent>
+
+          <form noValidate>
+            <TextField
+              id="date"
+              label="Start Date"
+              type="date"
+              onChange={this.handleStartDateChange}
+              value={this.state.startDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <TextField
+              id="date"
+              label="End Date"
+              type="date"
+              onChange={this.handleEndDateChange}
+              value={this.state.endDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </form>
+        </CardContent>
+
+      </Card>
+
       <Paper className="mb">
         <Table>
           <TableHead>

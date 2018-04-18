@@ -8,6 +8,7 @@ import {
   FETCH_SALES_FULFILLED,
   FAILURE
 } from '../constants/actionTypes'
+import { endOfDay } from 'date-fns';
 
 export function fetchTransaction(id) {
   return function (dispatch) {
@@ -26,10 +27,10 @@ export function fetchTransaction(id) {
   }
 }
 
-export function fetchTransactions() {
+export function fetchTransactions(startDate, endDate) {
   return function (dispatch) {
 
-    return api.fetchTransactions().then(res => {
+    return api.fetchTransactions(startDate, endDate).then(res => {
       return dispatch({
         type: FETCH_TRANSACTIONS_FULFILLED,
         payload: res

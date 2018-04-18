@@ -209,13 +209,13 @@ export function fetchTransaction(id) {
   return axios.get(`${url.api}/api/transactions/${id}`, config)
 }
 
-export function fetchSales(date) {
-  const config = Object.assign(headers(), { params: { date } })
+export function fetchSales({ startDate, endDate }) {
+  const config = Object.assign(headers(), { params: { startDate, endDate } })
   return axios.get(`${url.api}/api/sales`, config)
 }
 
-export function fetchTransactions() {
-  const config = Object.assign(headers(), {})
+export function fetchTransactions({ startDate, endDate }) {
+  const config = Object.assign(headers(), { params: { startDate, endDate } })
   return axios.get(`${url.api}/api/transactions`, config)
 }
 
