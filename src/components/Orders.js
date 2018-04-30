@@ -7,34 +7,31 @@ import ContentAdd from 'material-ui-icons/Add';
 import ContentRemove from 'material-ui-icons/Remove';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
-
-
+import Button from 'material-ui/Button';
 
 import { getTotals } from '../utils'
 import Box from "../components/Box";
 
 
-export default function Order({ items, onAdd, onRemove }) {
+export default function Order({ items, onAdd, onRemove, onSubmit }) {
   const total = getTotals(items)
   const mappedOrders = items.map(item => {
     return <TableRow key={shortid.generate()}>
       <TableCell style={{ whiteSpace: 'normal' }}>{item.name}</TableCell>
-      <TableCell numeric ><IconButton><ContentRemove onClick={() => onRemove(item)} /></IconButton><IconButton><ContentAdd onClick={() => onAdd(item)} /></IconButton></TableCell>
+      <TableCell style={{ display: 'flex' }} ><IconButton><ContentRemove onClick={() => onRemove(item)} /></IconButton><IconButton><ContentAdd onClick={() => onAdd(item)} /></IconButton></TableCell>
       <TableCell numeric style={{ width: 70 }}>{item.quantity}</TableCell>
-      <TableCell numeric style={{ width: 70 }}>{parseFloat(item.price).toFixed(2)}</TableCell>
       <TableCell numeric style={{ width: 70 }}>{(item.price * item.quantity).toFixed(2)}</TableCell>
     </TableRow>
   })
 
   return <div>
-    <Paper className="mb">
+    <Paper>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>Order</TableCell>
-            <TableCell numeric>Actions</TableCell>
+            <TableCell style={{ textAlign: 'center' }}>Actions</TableCell>
             <TableCell numeric>Quantity</TableCell>
-            <TableCell numeric>Unit Price</TableCell>
             <TableCell numeric>Total</TableCell>
           </TableRow>
         </TableHead>
@@ -45,9 +42,12 @@ export default function Order({ items, onAdd, onRemove }) {
 
       </Table>
     </Paper>
-    <Box style={{ float: 'right' }}>
-      <span>Subtotal</span>
-      <Typography style={{ marginLeft: '3rem' }} variant="title">{total.amount_due.toFixed(2)}</Typography>
+    <Box style={{ alignItems: 'center' }}>
+      Subtotal
+      <Typography variant="title" style={{ marginLeft: 'auto', marginRight: '1rem' }}>{total.amount_due.toFixed(2)}</Typography>
+      <Button variant="raised" color="primary" onClick={onSubmit} >Add Order</Button>
+
+
     </Box>
     <div style={{ clear: 'both' }}></div>
 

@@ -2,11 +2,11 @@ import React from "react";
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
 import currency from 'currency.js'
-import { format, endOfMonth, isValid } from 'date-fns'
+import { format, endOfMonth } from 'date-fns'
 
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
+import Card, { CardContent } from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 
 

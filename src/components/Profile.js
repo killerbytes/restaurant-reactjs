@@ -35,7 +35,7 @@ class Profile extends React.Component {
   render() {
     const { auth } = this.props
 
-    return <div>
+    return <div style={this.props.style}>
       <span>{auth.me && auth.me.name}</span>
 
       <IconButton

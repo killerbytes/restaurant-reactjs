@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton';
 
 
 
-import { getCarts } from '../../actions/cartActions'
+import { getCarts, checkoutCart } from '../../actions/cartActions'
 
 
 class Carts extends React.Component {
@@ -20,6 +20,9 @@ class Carts extends React.Component {
   handleItemClick = (item) => {
     this.props.history.push(`/carts/${item.id}`)
   }
+  handleCheckout = (item) => {
+    this.props.checkoutCart(item.id, false)
+  }
   render() {
     const { carts } = this.props
     const mappedCarts = !!carts.items.length && carts.items.filter(item => item.table_id).map(item => {
@@ -27,7 +30,7 @@ class Carts extends React.Component {
         <ListItemText primary={item.customer.name} />
         {
           item.is_checkout && <ListItemSecondaryAction>
-            <IconButton aria-label="Comments">
+            <IconButton aria-label="Comments" onClick={() => this.handleCheckout(item)}>
               <AssignmentTurnedIn />
             </IconButton>
           </ListItemSecondaryAction>
@@ -79,7 +82,8 @@ class Carts extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    getCarts
+    getCarts,
+    checkoutCart
   }, dispatch)
 };
 

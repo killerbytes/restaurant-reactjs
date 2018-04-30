@@ -14,13 +14,18 @@ body {
   display: flex;
   flex-direction: column; }
 
+.hide {
+  display: none; }
+
 .main {
   display: flex;
   flex: 1;
   margin-top: 64px; }
+  .main > div {
+    flex: 1; }
   .main section {
     flex: 1;
-    padding: 2rem; }
+    padding: 1rem 1.5rem; }
     .main section h1 {
       margin-top: 0; }
 

@@ -8,7 +8,7 @@ import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import ListSubheader from 'material-ui/List/ListSubheader';
 import TextField from 'material-ui/TextField';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
+import Card, { CardContent } from 'material-ui/Card';
 
 import { fetchSales } from '../../actions/transactionActions'
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'

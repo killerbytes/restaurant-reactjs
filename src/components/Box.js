@@ -6,7 +6,7 @@ export default class AdminLayout extends React.Component {
     return (
       <Paper className="box" {...this.props}>
         <span></span>
-        <div className="box-content">
+        <div className="box-content" {...this.props}>
           {this.props.children}
         </div>
       </Paper>

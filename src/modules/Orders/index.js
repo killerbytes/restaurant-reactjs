@@ -14,6 +14,8 @@ import Place from 'material-ui-icons/Place';
 import ContentAdd from 'material-ui-icons/Add';
 import Paper from 'material-ui/Paper';
 import CheckIcon from 'material-ui-icons/Check';
+import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import Checkbox from 'material-ui/Checkbox';
 
 import { getTotals } from '../../utils'
 import { getCart, getCarts, moveCustomer, checkoutCart } from '../../actions/cartActions'
@@ -26,6 +28,8 @@ import Menu from '../../components/Menu'
 import Orders from '../../components/Orders'
 import TablePicker from '../../components/TablePicker'
 import Box from '../../components/Box'
+import Profile from '../../components/Profile'
+
 
 import { url } from '../../constants/config'
 import io from 'socket.io-client'
@@ -36,6 +40,7 @@ const getInitialState = () => {
   return {
     menu_dialog: false,
     table_dialog: false,
+    table_collapsed: false,
     table: {},
     orders: []
   }
@@ -136,9 +141,15 @@ class Cart extends React.Component {
     saveOrderStatus(params.id, [item.id], 'complete')
   }
 
+  handleCollapseClick = (e) => {
+    this.setState({
+      table_collapsed: !this.state.table_collapsed
+    })
+  }
+
   render() {
     const { carts, product, tables, match: { params } } = this.props
-    const { orders } = this.state
+    const { orders, table_collapsed } = this.state
     const item = carts.item && carts.item[params.id]
     if (!item) return false
     const total = getTotals(item.orders)
@@ -157,11 +168,12 @@ class Cart extends React.Component {
       }
       return <TableRow key={item.id}>
         <TableCell style={{ whiteSpace: 'normal' }}>{item.product.name}</TableCell>
-        <TableCell padding="none">{getStatus()}</TableCell>
-        <TableCell numeric>{format(item.created_at, 'h:mm:ss A')}</TableCell>
-        <TableCell numeric style={{ width: 70 }}>{item.quantity}</TableCell>
-        <TableCell numeric style={{ width: 70 }}>{parseFloat(item.price).toFixed(2)}</TableCell>
-        <TableCell numeric style={{ width: 70 }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
+        {table_collapsed && <TableCell padding="none">{getStatus()}</TableCell>}
+
+        {table_collapsed && <TableCell numeric>{format(item.created_at, 'h:mm:ss A')}</TableCell>}
+        {!table_collapsed && <TableCell numeric style={{ width: 70 }}>{item.quantity}</TableCell>}
+        {table_collapsed && <TableCell numeric style={{ width: 70 }}>{parseFloat(item.price).toFixed(2)}</TableCell>}
+        {!table_collapsed && <TableCell numeric style={{ width: 70 }}>{(item.quantity * item.price).toFixed(2)}</TableCell>}
       </TableRow>
     })
 
@@ -173,27 +185,41 @@ class Cart extends React.Component {
           <IconButton onClick={() => this.handleDialog('table_dialog', true)}>
             <Place />
           </IconButton>
-          <Button variant="raised" color="secondary" disabled={item.is_checkout} onClick={this.checkout} style={{ marginLeft: 'auto' }} >Checkout</Button>
+          <Profile style={{ marginLeft: 'auto' }} />
+
         </Toolbar>
       </AppBar>
       <div className="main">
-        <section>
+        <div>
 
-          <Paper className="mb">
-            <Toolbar>
-              <Typography variant="subheading">Orders</Typography>
-            </Toolbar>
+          <Paper>
+            <div style={{ padding: '0 1.5rem', display: 'flex', flexDirection: 'row-reverse' }}>
+
+              <FormGroup row>
+                <FormControlLabel
+                  style={{ marginRight: 0 }}
+                  control={
+                    <Checkbox
+                      checked={table_collapsed}
+                      onChange={this.handleCollapseClick}
+                    />
+                  }
+                  label="Collapse"
+                />
+              </FormGroup>
+            </div>
+
             <Table>
-              <TableHead>
+              <TableBody>
                 <TableRow>
                   <TableCell>Order</TableCell>
-                  <TableCell padding="none">Status</TableCell>
-                  <TableCell numeric>Time</TableCell>
-                  <TableCell numeric>Quantity</TableCell>
-                  <TableCell numeric>Unit Price</TableCell>
-                  <TableCell numeric>Total</TableCell>
+                  {table_collapsed && <TableCell padding="none">Status</TableCell>}
+                  {table_collapsed && <TableCell numeric>Time</TableCell>}
+                  {!table_collapsed && <TableCell numeric>Quantity</TableCell>}
+                  {table_collapsed && <TableCell numeric>Unit Price</TableCell>}
+                  {!table_collapsed && <TableCell numeric>Total</TableCell>}
                 </TableRow>
-              </TableHead>
+              </TableBody>
 
               <TableBody>
                 {mappedOrders}
@@ -201,11 +227,12 @@ class Cart extends React.Component {
               </TableBody>
             </Table>
           </Paper>
-          <Box style={{ float: 'right' }}>
+
+          <Box style={{ alignItems: 'center' }}>
             Subtotal
-            <Typography variant="title" style={{ marginLeft: '3rem' }}>{total.amount_due.toFixed(2)}</Typography>
+            <Typography variant="title" style={{ marginLeft: 'auto', marginRight: '1rem' }}>{total.amount_due.toFixed(2)}</Typography>
+            <Button variant="raised" color="primary" disabled={item.is_checkout} onClick={this.checkout} >Checkout</Button>
           </Box>
-          <div style={{ clear: 'both' }}></div>
 
           {
             orders.length
@@ -217,10 +244,8 @@ class Cart extends React.Component {
                 <Orders
                   onAdd={this.increaseQty}
                   onRemove={this.decreaseQty}
+                  onSubmit={this.handleAdditionalOrders}
                   items={orders} />
-                <div style={{ float: 'right' }}>
-                  <Button color="secondary" variant="raised" onClick={this.handleAdditionalOrders}>Add Order</Button>
-                </div>
               </div>
               :
               (null)
@@ -245,8 +270,9 @@ class Cart extends React.Component {
           <Button variant="fab" disabled={item.is_checkout} onClick={() => this.handleDialog('menu_dialog', true)} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
             <ContentAdd />
           </Button>
-          <div style={{ marginTop: '5rem' }}></div>
-        </section>
+
+          <div style={{ marginTop: '7rem' }}></div>
+        </div>
       </div>
 
     </div>

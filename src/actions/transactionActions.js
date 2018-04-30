@@ -8,7 +8,6 @@ import {
   FETCH_SALES_FULFILLED,
   FAILURE
 } from '../constants/actionTypes'
-import { endOfDay } from 'date-fns';
 
 export function fetchTransaction(id) {
   return function (dispatch) {

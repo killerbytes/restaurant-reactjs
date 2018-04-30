@@ -14,7 +14,7 @@ export default function MenuItem({ item, onClickItem }) {
   })
   return <div>
 
-    <Typography variant="title">{item.name}</Typography >
+    <Typography variant="subheading" color="primary" style={{ textTransform: 'uppercase' }}>{item.name}</Typography >
     <Table className="mb">
       <TableBody>
         {mappedProducts}

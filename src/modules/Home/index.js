@@ -148,7 +148,7 @@ class Home extends React.Component {
         {
           orders.length
             ?
-            <section>
+            <div>
               <Orders
                 onAdd={this.increaseQty}
                 onRemove={this.decreaseQty}
@@ -157,10 +157,12 @@ class Home extends React.Component {
               <Button variant="fab" onClick={this.submit} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
                 <NavigationCheck />
               </Button>
+              <div style={{ marginTop: '7rem' }}></div>
 
-            </section>
+            </div>
             : null
         }
+
       </div>
 
       <TablePicker

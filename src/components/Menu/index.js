@@ -3,7 +3,6 @@ import Button from 'material-ui/Button';
 import Dialog, {
   DialogActions,
   DialogContent,
-  DialogTitle,
 } from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
 
@@ -22,18 +21,13 @@ export default function Menu(props) {
     fullScreen
     onClose={() => onCloseModal()}
     open={isOpen}>
-    <DialogTitle>Menu</DialogTitle>
     <DialogContent>
       <Grid container>
         {mappedMenu}
       </Grid>
-      <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-        <div>
-        </div>
-      </div>
     </DialogContent>
     <DialogActions>
-      <Button onClick={() => onCloseModal()} color="primary">
+      <Button onClick={() => onCloseModal()} color="secondary">
         Close
       </Button>
     </DialogActions>
