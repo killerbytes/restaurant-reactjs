@@ -3,19 +3,20 @@ import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
 import { format } from 'date-fns'
 
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import AppBar from 'material-ui/AppBar';
 import Typography from 'material-ui/Typography';
 import Toolbar from 'material-ui/Toolbar';
-import NavigationClose from 'material-ui-icons/Close';
+import ArrowBack from 'material-ui-icons/ArrowBack';
 import IconButton from 'material-ui/IconButton';
 import Button from 'material-ui/Button';
 import Place from 'material-ui-icons/Place';
-import ContentAdd from 'material-ui-icons/Add';
+import RestaurantMenu from 'material-ui-icons/RestaurantMenu';
 import Paper from 'material-ui/Paper';
 import CheckIcon from 'material-ui-icons/Check';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import Checkbox from 'material-ui/Checkbox';
+import NavigationCheck from 'material-ui-icons/Check';
 
 import { getTotals } from '../../utils'
 import { getCart, getCarts, moveCustomer, checkoutCart } from '../../actions/cartActions'
@@ -179,8 +180,8 @@ class Cart extends React.Component {
 
     return <div className="container">
       <AppBar>
-        <Toolbar>
-          <IconButton onClick={() => this.props.history.push('/')}><NavigationClose /></IconButton>
+        <Toolbar disableGutters={true} className="header-toolbar">
+          <IconButton onClick={() => this.props.history.push('/')}><ArrowBack /></IconButton>
           <Typography variant="title">{item && item.customer.name}</Typography>
           <IconButton onClick={() => this.handleDialog('table_dialog', true)}>
             <Place />
@@ -244,8 +245,11 @@ class Cart extends React.Component {
                 <Orders
                   onAdd={this.increaseQty}
                   onRemove={this.decreaseQty}
-                  onSubmit={this.handleAdditionalOrders}
                   items={orders} />
+                <Button color="primary" variant="fab" onClick={this.handleAdditionalOrders} style={{ position: 'fixed', bottom: '1.5rem', right: '1.5rem' }}>
+                  <NavigationCheck />
+                </Button>
+
               </div>
               :
               (null)
@@ -267,9 +271,10 @@ class Cart extends React.Component {
             carts={carts}
             tables={tables} />
 
-          <Button variant="fab" disabled={item.is_checkout} onClick={() => this.handleDialog('menu_dialog', true)} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
-            <ContentAdd />
+          <Button variant="fab" disabled={item.is_checkout} onClick={() => this.handleDialog('menu_dialog', true)} style={{ position: 'fixed', bottom: '1.5rem', left: '1.5rem' }}>
+            <RestaurantMenu />
           </Button>
+
 
           <div style={{ marginTop: '7rem' }}></div>
         </div>

@@ -6,14 +6,29 @@ import currency from 'currency.js'
 
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import Typography from 'material-ui/Typography';
+import Toolbar from 'material-ui/Toolbar';
+import ExpandLess from 'material-ui-icons/ExpandLess';
+import ExpandMore from 'material-ui-icons/ExpandMore';
+import IconButton from 'material-ui/IconButton';
+import Collapse from 'material-ui/transitions/Collapse';
 
 import Box from '../../components/Box'
 import { fetchTransaction } from '../../actions/transactionActions'
 
 class Transactions extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      void_collapse: false
+    }
+  }
   componentDidMount() {
     const { match: { params } } = this.props
     this.props.fetchTransaction(params.id)
+  }
+  handleVoidCollapse = () => {
+    this.setState({ 'void_collapse': !this.state.void_collapse })
   }
   render() {
     const { transaction: { item } } = this.props
@@ -23,6 +38,15 @@ class Transactions extends React.Component {
         <TableCell style={{ width: 70, textAlign: 'right' }}>{item.quantity}</TableCell>
         <TableCell style={{ width: 70, textAlign: 'right' }}>{parseFloat(item.price).toFixed(2)}</TableCell>
         <TableCell style={{ width: 70, textAlign: 'right' }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
+      </TableRow>
+    })
+
+    const mappedVoid = !!item.cart.void.length && item.cart.void.map(item => {
+      return <TableRow key={item.id}>
+        <TableCell style={{ whiteSpace: 'normal' }}>{item.product.name}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{item.quantity}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{parseFloat(item.price).toFixed(2)}</TableCell>
+        <TableCell numeric style={{ width: 70 }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
       </TableRow>
     })
 
@@ -58,6 +82,7 @@ class Transactions extends React.Component {
         </Table>
       </Paper>
 
+
       <Box>
         <label htmlFor="">Discount</label>
         <strong>{currency(item.discount).format()}</strong>
@@ -67,6 +92,28 @@ class Transactions extends React.Component {
         <label htmlFor="">Total</label>
         <strong>{currency(item.total_amount_due).format()}</strong>
       </Box>
+
+      {
+        mappedVoid && <div>
+          <Toolbar>
+            <Typography >
+              Void
+            </Typography>
+            <IconButton onClick={() => this.handleVoidCollapse()}>
+              {this.state.void_collapse ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+
+          </Toolbar>
+          <Collapse in={this.state.void_collapse} timeout="auto" unmountOnExit>
+            <Paper className="mb">
+              <Table>
+                <TableBody>{mappedVoid}</TableBody>
+              </Table>
+            </Paper>
+          </Collapse>
+
+        </div>
+      }
 
     </div >
   }

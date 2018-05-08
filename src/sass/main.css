@@ -20,7 +20,7 @@ body {
 .main {
   display: flex;
   flex: 1;
-  margin-top: 64px; }
+  margin-top: 48px; }
   .main > div {
     flex: 1; }
   .main section {
@@ -70,3 +70,6 @@ input[type=number] {
 .nav .active {
   color: #000 !important;
   font-weight: bold; }
+
+.header-toolbar {
+  min-height: 48px !important; }

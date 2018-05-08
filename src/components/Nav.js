@@ -31,17 +31,26 @@ class AdminNav extends React.Component {
     this.props.history.push(route)
   }
   render() {
-    const { carts } = this.props.navigation
+    const { navigation: { carts }, auth: { me } } = this.props
     const checkout = carts.items.filter(item => {
       return item.is_checkout
     })
-    return <Paper className="nav" style={{ minWidth: '200px' }}>
-      <MenuList>
 
-        <MenuItem onClick={() => this.handleNavigate('/users')}><NavLink to="/users" activeClassName="active">Users</NavLink></MenuItem>
-        <MenuItem onClick={() => this.handleNavigate('/products')}><NavLink to="/products" activeClassName="active">Products</NavLink></MenuItem>
-        <MenuItem onClick={() => this.handleNavigate('/categories')}><NavLink to="/categories" activeClassName="active">Categories</NavLink></MenuItem>
-        <MenuItem onClick={() => this.handleNavigate('/tables')}><NavLink to="/tables" activeClassName="active">Tables</NavLink></MenuItem>
+    const admin = () => {
+      return (me && me.role === 'manager') || (me && me.role === 'admin') ?
+        <MenuList>
+          <MenuItem onClick={() => this.handleNavigate('/users')}><NavLink to="/users" activeClassName="active">Users</NavLink></MenuItem>
+          <MenuItem onClick={() => this.handleNavigate('/products')}><NavLink to="/products" activeClassName="active">Products</NavLink></MenuItem>
+          <MenuItem onClick={() => this.handleNavigate('/categories')}><NavLink to="/categories" activeClassName="active">Categories</NavLink></MenuItem>
+          <MenuItem onClick={() => this.handleNavigate('/tables')}><NavLink to="/tables" activeClassName="active">Tables</NavLink></MenuItem>
+        </MenuList>
+        : null
+    }
+    console.log(admin)
+    return <Paper className="nav" style={{ maxWidth: 200 }}>
+      {admin()}
+
+      <MenuList>
 
         <MenuItem onClick={() => this.handleNavigate('/carts')}>
           <NavLink to="/carts" activeClassName="active">Carts</NavLink>
@@ -67,8 +76,9 @@ const mapDispatchToProps = dispatch => {
   }, dispatch)
 };
 
-const mapStateToProps = ({ navigation }) => ({
-  navigation
+const mapStateToProps = ({ navigation, auth }) => ({
+  navigation,
+  auth
 });
 
 

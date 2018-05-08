@@ -44,7 +44,7 @@ export function getProfile() {
       .catch(err => {
         dispatch({
           type: FAILURE,
-          error: err.response.data.error
+          error: err.response && err.response.data.error
         })
       })
   }

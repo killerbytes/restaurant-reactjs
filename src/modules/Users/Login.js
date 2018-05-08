@@ -23,7 +23,7 @@ const styles = theme => ({
   },
   media: {
     marginTop: 20,
-    height: 200,
+    height: '30vh',
     backgroundSize: 'contain'
   },
   menu: {
@@ -87,7 +87,7 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = ({ item }) => {
   return ({
-    initialValues: { username: 'superman', password: 'test' }
+    initialValues: { username: '', password: '' }
   });
 }
 

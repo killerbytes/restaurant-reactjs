@@ -39,8 +39,12 @@ export default function reducer(
     case USER_LOGIN_SUCCESS: {
       let redirectTo = null
       switch (action.payload.role) {
+        case 'admin':
         case 'manager':
           redirectTo = '/products'
+          break;
+        case 'cashier':
+          redirectTo = '/carts'
           break;
         case 'kitchen':
           redirectTo = '/kitchen'

@@ -30,6 +30,7 @@ import TableEdit from './Tables/Edit'
 import Users from "./Users";
 import UserNew from "./Users/New";
 import UserEdit from './Users/Edit'
+import UserProfile from "./Users/Profile";
 import Login from './Users/Login'
 
 import AdminTransactionDetail from "./Transactions/Detail";
@@ -106,11 +107,13 @@ class App extends React.Component {
         <Layout layout={AdminLayout} path="/users/new" component={UserNew} />
         <Layout layout={AdminLayout} path="/users/:id" component={UserEdit} />
         <Layout layout={AdminLayout} exact path="/users" component={Users} />
+        <Layout layout={AdminLayout} exact path="/profile" component={UserProfile} />
 
       </Switch>
 
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={3000}
         open={this.state.snackbar_dialog}
         onClose={this.handleOnClose}
         SnackbarContentProps={{

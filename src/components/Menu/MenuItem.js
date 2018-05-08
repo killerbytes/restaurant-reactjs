@@ -20,5 +20,6 @@ export default function MenuItem({ item, onClickItem }) {
         {mappedProducts}
       </TableBody>
     </Table>
+
   </div>
 }

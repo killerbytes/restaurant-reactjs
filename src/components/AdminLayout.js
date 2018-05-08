@@ -3,7 +3,7 @@ import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 
-import AdminNav from '../components/AdminNav'
+import Nav from '../components/Nav'
 import Profile from '../components/Profile'
 
 export default class AdminLayout extends React.Component {
@@ -11,7 +11,7 @@ export default class AdminLayout extends React.Component {
     return (
       <div className="container">
         <AppBar>
-          <Toolbar>
+          <Toolbar className="header-toolbar">
             <Typography variant="title" style={{ flex: 1 }}>Admin</Typography>
             <Profile />
 
@@ -19,7 +19,7 @@ export default class AdminLayout extends React.Component {
         </AppBar>
 
         <div className="main">
-          <AdminNav {...this.props} />
+          <Nav {...this.props} />
 
           <section>
             {this.props.children}

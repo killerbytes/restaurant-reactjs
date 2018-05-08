@@ -28,7 +28,7 @@ body {
 .main {
     display: flex;
     flex: 1;
-    margin-top: 64px;
+    margin-top: 48px;
 
     > div {
         flex: 1;
@@ -100,4 +100,8 @@ input[type=number] {
         color: #000 !important;
         font-weight: bold;
     }
+}
+
+.header-toolbar {
+    min-height: 48px !important;
 }

@@ -60,6 +60,23 @@ export function updateUser(id, category) {
   }
 }
 
+export function updatePassword(id, password) {
+  return function (dispatch) {
+    return api.updatePassword(id, password).then(res => {
+      dispatch({ type: INVALIDATE_USERS })
+      return dispatch({
+        type: SAVE_USER_FULFILLED,
+        id
+      })
+    })
+      .catch(err => {
+        const { error } = err.response.data
+        dispatch({ type: FAILURE, error })
+      })
+
+  }
+}
+
 export function deleteUser(id) {
   return function (dispatch) {
     return api.deleteUser(id).then(res => {

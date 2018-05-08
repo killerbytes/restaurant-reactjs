@@ -87,12 +87,14 @@ class Sales extends React.Component {
       return <Paper key={shortid.generate()} className="mb">
         <ListSubheader>{category.name}</ListSubheader>
         <Table >
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell numeric>Quantity</TableCell>
-            </TableRow>
-          </TableHead>
+          {!!mappedItem.length &&
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell numeric>Quantity</TableCell>
+              </TableRow>
+            </TableHead>
+          }
 
           <TableBody>
             {mappedItem}

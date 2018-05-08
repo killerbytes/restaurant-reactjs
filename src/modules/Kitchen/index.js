@@ -22,8 +22,7 @@ import io from 'socket.io-client'
 const socket = io(url.api)
 
 const getInitialState = () => {
-  return {
-  }
+  return {}
 }
 class Kitchen extends React.Component {
   constructor(props) {
@@ -93,11 +92,9 @@ class Kitchen extends React.Component {
         return <div key={cart.id}>
           <Card>
             <CardContent>
-
               {cart.customer.name}
               <Table>
                 <TableBody>
-
                   {mapperOrders}
                 </TableBody>
               </Table>
@@ -106,7 +103,7 @@ class Kitchen extends React.Component {
 
             </Paper>
             <CardActions>
-              <Button color="primary" onClick={() => this.handleComplete(cart)}>Done</Button>
+              <Button variant="raised" color="primary" onClick={() => this.handleComplete(cart)}>Done</Button>
             </CardActions>
           </Card>
         </div>
@@ -114,7 +111,7 @@ class Kitchen extends React.Component {
 
     return <div className="container">
       <AppBar>
-        <Toolbar>
+        <Toolbar disableGutters={true} className="header-toolbar">
           <IconButton onClick={() => this.handleDialog('table_dialog', true)} color="inherit" aria-label="Menu">
             <ActionHome />
           </IconButton>
@@ -127,9 +124,6 @@ class Kitchen extends React.Component {
       <div className="main bg" style={{ overflow: 'auto' }}>
         {mappedCarts}
       </div>
-
-
-
     </div>
   }
 }
@@ -144,7 +138,6 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = ({ categories, tables, carts, menu }) => ({
   carts
 });
-
 
 export default connect(
   mapStateToProps,

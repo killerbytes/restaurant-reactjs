@@ -47,6 +47,10 @@ export function updateUser(id, table) {
   const config = Object.assign(headers(), {})
   return axios.patch(`${url.api}/api/users/${id}`, table, config)
 }
+export function updatePassword(id, form) {
+  const config = Object.assign(headers(), {})
+  return axios.patch(`${url.api}/api/users/${id}/update_password`, form, config)
+}
 export function deleteUser(id) {
   const config = Object.assign(headers(), {})
   return axios.delete(`${url.api}/api/users/${id}`, config)

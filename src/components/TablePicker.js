@@ -55,13 +55,9 @@ class TablePicker extends React.Component {
           }
         </ListItemIcon>
         <ListItemText inset primary={item.name}></ListItemText>
+        {cart && cart.is_checkout && <AssignmentTurnedIn color="secondary" />}
         {!!ready && !!ready.length && <RadioButtonCheckedIcon style={{ color: 'green' }} />}
 
-
-        {
-
-          cart && cart.is_checkout && <AssignmentTurnedIn color="secondary" />
-        }
 
       </ListItem>
     })
@@ -87,15 +83,15 @@ class TablePicker extends React.Component {
       }}
       open={isOpen}
       onClose={onCloseModal}>
-      <DialogTitle>Choose Table</DialogTitle>
+      <DialogTitle disableTypography={true}>Choose Table</DialogTitle>
       <DialogContent>
         <Grid container spacing={0}>
-          <Grid item sm={6} zeroMinWidth>
+          <Grid item sm={12} xs={12} zeroMinWidth>
             <List component="nav">
               {mappedTables}
             </List>
           </Grid>
-          <Grid item sm={6} zeroMinWidth>
+          <Grid item sm={12} xs={12} zeroMinWidth>
             <List component="nav">
               {mappedCustom}
             </List>

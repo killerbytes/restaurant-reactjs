@@ -18,8 +18,10 @@ import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/D
 import Collapse from 'material-ui/transitions/Collapse';
 import ExpandLess from 'material-ui-icons/ExpandLess';
 import ExpandMore from 'material-ui-icons/ExpandMore';
-import BlockIcon from 'material-ui-icons/Block';
 import CheckIcon from 'material-ui-icons/Check';
+import Menu, { MenuItem } from 'material-ui/Menu';
+import MoreVertIcon from 'material-ui-icons/MoreVert';
+
 
 import VoidOrder from '../../components/VoidOrder'
 import { getCart } from '../../actions/cartActions'
@@ -51,7 +53,10 @@ class Carts extends React.Component {
       notes: "",
       discount: 0,
       order: {},
-      voidQuantity: 0
+      voidQuantity: 0,
+      menu: false,
+      anchorEl: null,
+
     }
   }
   componentDidMount() {
@@ -64,14 +69,14 @@ class Carts extends React.Component {
   }
 
   handleDialog = (key, open = false) => {
-    this.setState({ [key]: open })
+    this.setState({ [key]: open, menu: false })
   }
 
   handleCheckout = () => {
     const { match: { params }, carts: { item } } = this.props
     this.props.createTransaction({
       cart_id: item[params.id].id,
-      discount: 0,
+      discount: parseFloat(this.state.discount),
       amount_paid: parseFloat(this.state.amount)
     })
 
@@ -106,6 +111,12 @@ class Carts extends React.Component {
     }
     this.handleDialog('discount_dialog')
   }
+  handleMenu = (e) => {
+    this.setState({
+      menu: true,
+      anchorEl: e.target
+    })
+  }
 
   render() {
     const { carts, classes, match: { params } } = this.props
@@ -115,7 +126,7 @@ class Carts extends React.Component {
     const { orders } = cart
     const total = getTotals(orders)
     const subtotal = parseFloat(total.amount_due) - parseFloat(discount) || 0
-    const change = parseFloat(amount) - parseFloat(subtotal) > 0 ? currency(amount).subtract(subtotal).format() : ""
+    const change = parseFloat(amount) - parseFloat(subtotal) > 0 ? currency(amount).subtract(subtotal).value : ""
     const mappedOrders = cart.orders.map(item => {
       const getStatus = () => {
         switch (item.status) {
@@ -134,9 +145,37 @@ class Carts extends React.Component {
         <TableCell numeric>{format(item.created_at, 'h:mm:ss A')}</TableCell>
         <TableCell>{getStatus()}</TableCell>
         <TableCell numeric style={{ width: 70 }}>{item.quantity}  </TableCell>
-        <TableCell numeric style={{ width: 50 }}><IconButton onClick={() => this.handleSetVoid(item)}><BlockIcon></BlockIcon></IconButton></TableCell>
+        {/* <TableCell numeric style={{ width: 50 }}><IconButton onClick={() => this.handleSetVoid(item)}><BlockIcon></BlockIcon></IconButton></TableCell> */}
         <TableCell numeric style={{ width: 70 }}>{parseFloat(item.price).toFixed(2)}</TableCell>
         <TableCell numeric style={{ width: 70 }}>{(item.quantity * item.price).toFixed(2)}</TableCell>
+        <TableCell>
+          <IconButton
+            aria-haspopup="true"
+            color="inherit"
+            onClick={this.handleMenu}
+          >
+            <MoreVertIcon />
+          </IconButton>
+
+          <Menu
+            id="menu-appbar"
+            anchorEl={this.state.anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={this.state.menu}
+            onClose={() => this.handleDialog('menu')}
+          >
+            <MenuItem onClick={() => this.handleSetVoid(item)}>Void</MenuItem>
+          </Menu>
+
+        </TableCell>
+
       </TableRow>
     })
 
@@ -163,9 +202,9 @@ class Carts extends React.Component {
                 <TableCell numeric>Time</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell numeric>Quantity</TableCell>
-                <TableCell >Void</TableCell>
                 <TableCell numeric>Unit Price</TableCell>
                 <TableCell numeric>Total</TableCell>
+                <TableCell >Void</TableCell>
               </TableRow>
             </TableHead>
 
@@ -188,15 +227,6 @@ class Carts extends React.Component {
 
       {
         mappedVoid && <div>
-          <details>
-            <summary>Void</summary>
-            <Paper className="mb">
-              <Table>
-                <TableBody>{mappedVoid}</TableBody>
-              </Table>
-            </Paper>
-
-          </details>
           <Toolbar>
             <Typography >
               Void
@@ -247,13 +277,7 @@ class Carts extends React.Component {
                   value={this.state.amount}
                   name="amount"
                   onChange={(e) => this.handleTextChange(e)} />
-                <TextField
-                  label="Change"
-                  type="number"
-                  fullWidth
-                  disabled
-                  className={classes.margin}
-                  value={change} />
+                <div>Change: <span style={{ float: 'right' }}>{change && currency(change).format()}</span></div>
 
 
                 <div style={{ marginBottom: '1rem' }}></div>

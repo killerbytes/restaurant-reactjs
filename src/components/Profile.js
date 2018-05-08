@@ -1,6 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux";
+import { NavLink } from 'react-router-dom'
 
 import IconButton from 'material-ui/IconButton';
 import AccountCircle from 'material-ui-icons/AccountCircle';
@@ -31,6 +32,9 @@ class Profile extends React.Component {
   handleLogoutClick = () => {
     this.props.logout()
   }
+  handleNavigate = (route) => {
+    this.props.history.push(route)
+  }
 
   render() {
     const { auth } = this.props
@@ -59,6 +63,7 @@ class Profile extends React.Component {
         open={this.state.menu}
         onClose={() => this.handleDialog('menu')}
       >
+        <MenuItem><NavLink to="/profile" activeClassName="active">Profile</NavLink></MenuItem>
         <MenuItem onClick={this.handleLogoutClick}>Logout</MenuItem>
       </Menu>
     </div>

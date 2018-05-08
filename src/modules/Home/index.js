@@ -8,7 +8,9 @@ import NavigationCheck from 'material-ui-icons/Check';
 import IconButton from 'material-ui/IconButton';
 import Button from 'material-ui/Button';
 import ActionHome from 'material-ui-icons/Home';
-import ContentAdd from 'material-ui-icons/Add';
+import RestaurantMenu from 'material-ui-icons/RestaurantMenu';
+import LocationOn from 'material-ui-icons/LocationOn';
+
 
 import { fetchCategoriesIfNeeded } from '../../actions/categoryActions'
 import { fetchTablesIfNeeded } from '../../actions/tableActions'
@@ -27,7 +29,7 @@ const socket = io(url.api)
 const getInitialState = () => {
   return {
     menu_dialog: false,
-    table_dialog: true,
+    table_dialog: false,
     table: {},
     orders: []
   }
@@ -134,12 +136,12 @@ class Home extends React.Component {
     const { table, orders } = this.state
     return <div className="container">
       <AppBar>
-        <Toolbar>
-          <IconButton onClick={() => this.handleDialog('table_dialog', true)} color="inherit" aria-label="Menu">
+        <Toolbar disableGutters={true} className="header-toolbar">
+          <IconButton color="inherit" aria-label="Menu">
             <ActionHome />
           </IconButton>
           <Typography variant="title" style={{ flex: 1 }}>
-            {table.name || 'Orders'}
+            {table.name || "Bayaw's Grill"}
           </Typography>
           <Profile />
         </Toolbar>
@@ -154,7 +156,7 @@ class Home extends React.Component {
                 onRemove={this.decreaseQty}
                 items={orders} />
 
-              <Button variant="fab" onClick={this.submit} style={{ position: 'fixed', bottom: '2rem', right: '2rem' }}>
+              <Button variant="fab" color="primary" onClick={this.submit} style={{ position: 'fixed', bottom: '1.5rem', right: '1.5rem' }}>
                 <NavigationCheck />
               </Button>
               <div style={{ marginTop: '7rem' }}></div>
@@ -178,8 +180,12 @@ class Home extends React.Component {
         onClickItem={this.handleMenuItem}
         product={product} />
 
-      <Button variant="fab" onClick={() => this.handleDialog('menu_dialog', true)} style={{ position: 'fixed', bottom: '2rem', left: '2rem' }}>
-        <ContentAdd />
+      <Button variant="fab" onClick={() => this.handleDialog('table_dialog', true)} style={{ position: 'fixed', bottom: '6rem', left: '1.5rem' }}>
+        <LocationOn />
+      </Button>
+
+      <Button variant="fab" onClick={() => this.handleDialog('menu_dialog', true)} style={{ position: 'fixed', bottom: '1.5rem', left: '1.5rem' }}>
+        <RestaurantMenu />
       </Button>
 
     </div>

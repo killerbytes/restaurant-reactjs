@@ -24,7 +24,7 @@ class Categories extends React.Component {
 
         const mappedCategories = categories.items.map(category => {
             return <ListItem button key={category.id} onClick={() => this.handleItemClick(category)}>
-                <ListItemText primary={category.name} />
+                <ListItemText primary={`${category.order} - ${category.name}`} />
             </ListItem>
 
         })
