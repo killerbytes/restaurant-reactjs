@@ -46,7 +46,6 @@ class AdminNav extends React.Component {
         </MenuList>
         : null
     }
-    console.log(admin)
     return <Paper className="nav" style={{ maxWidth: 200 }}>
       {admin()}
 

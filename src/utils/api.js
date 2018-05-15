@@ -104,6 +104,11 @@ export function deleteCategory(id) {
   return axios.delete(`${url.api}/api/categories/${id}`, config)
 }
 
+export function sortCategories(ids) {
+  const config = Object.assign(headers(), {})
+  return axios.patch(`${url.api}/api/categories/sort`, ids, config)
+}
+
 
 
 // END CATEGORIES

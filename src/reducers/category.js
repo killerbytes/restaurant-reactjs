@@ -2,7 +2,8 @@ import {
   INVALIDATE_CATEGORIES,
   FETCH_CATEGORY_FULFILLED,
   FETCH_CATEGORIES,
-  FETCH_CATEGORIES_FULFILLED
+  FETCH_CATEGORIES_FULFILLED,
+  UPDATE_SORTING_FULFILLED
 } from "../constants/actionTypes";
 
 export default function reducer(
@@ -24,6 +25,9 @@ export default function reducer(
     }
     case FETCH_CATEGORIES_FULFILLED: {
       return { ...state, loading: false, didInvalidate: false, ...action.payload.data };
+    }
+    case UPDATE_SORTING_FULFILLED: {
+      return { ...state, loading: false, items: action.payload.data }
     }
     default:
       return state;

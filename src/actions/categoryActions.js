@@ -5,8 +5,21 @@ import {
   FETCH_CATEGORIES_FULFILLED,
   FETCH_CATEGORY_FULFILLED,
   SAVE_CATEGORY_FULFILLED,
+  UPDATE_SORTING_FULFILLED,
   FAILURE
 } from '../constants/actionTypes'
+
+export function updateSorting(items) {
+  return function (dispatch) {
+    const sorted = items.map((item, index) => {
+      return item.id
+    })
+    return api.sortCategories(sorted).then(res => {
+      return dispatch({ type: UPDATE_SORTING_FULFILLED, payload: res })
+    })
+
+  }
+}
 
 export function fetchCategory(id) {
   return function (dispatch) {
