@@ -17,16 +17,16 @@ import App from "./modules/App";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      // light: '#f9683a',
-      main: '#e65100'
-      // dark: '#870000',
-      // contrastText: '#FFF'
+      light: '#FF9800',
+      main: '#FB8C00',
+      dark: '#E65100',
+      contrastText: '#FFF'
     },
     secondary: {
-      // light: '#ffa040',
+      light: '#ffa040',
       main: '#f57f17',
-      // dark: '#c43e00',
-      // contrastText: '#FFF',
+      dark: '#c43e00',
+      contrastText: '#FFF',
     },
     // error: will us the default color
   },

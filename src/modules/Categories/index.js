@@ -10,7 +10,7 @@ import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button'
 import ContentAddIcon from 'material-ui-icons/Add';
 import Switch from 'material-ui/Switch';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import { FormControlLabel } from 'material-ui/Form';
 import Divider from 'material-ui/Divider';
 
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
@@ -53,7 +53,6 @@ class Categories extends React.Component {
 	};
 	render() {
 		const { categories, classes } = this.props
-		console.log(classes.border)
 
 		const Items = ({ item }) => <ListItem
 			className={this.state.isSorting ? classes.border : ''}
@@ -99,7 +98,7 @@ class Categories extends React.Component {
 							color="primary"
 						/>
 					}
-					label="Sort"
+					label="Re-order"
 				/>
 				<Divider />
 
@@ -112,7 +111,7 @@ class Categories extends React.Component {
 				}
 			</Paper>
 
-			<Button variant="fab" component={Link} to="/categories/new" style={{ position: 'fixed', zIndex: 10, bottom: '2rem', right: '2rem' }}>
+			<Button variant="fab" color="primary" component={Link} to="/categories/new" style={{ position: 'fixed', zIndex: 10, bottom: '2rem', right: '2rem' }}>
 				<ContentAddIcon />
 			</Button>
 

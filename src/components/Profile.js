@@ -40,7 +40,7 @@ class Profile extends React.Component {
     const { auth } = this.props
 
     return <div style={this.props.style}>
-      <span>{auth.me && auth.me.name}</span>
+      {auth.me && auth.me.name}
 
       <IconButton
         aria-haspopup="true"

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { NavLink } from 'react-router-dom'
 
 import Paper from 'material-ui/Paper';
+import Divider from 'material-ui/Divider';
 import { MenuList, MenuItem } from 'material-ui/Menu';
 import IconButton from 'material-ui/IconButton';
 import Badge from 'material-ui/Badge';
@@ -43,6 +44,7 @@ class AdminNav extends React.Component {
           <MenuItem onClick={() => this.handleNavigate('/products')}><NavLink to="/products" activeClassName="active">Products</NavLink></MenuItem>
           <MenuItem onClick={() => this.handleNavigate('/categories')}><NavLink to="/categories" activeClassName="active">Categories</NavLink></MenuItem>
           <MenuItem onClick={() => this.handleNavigate('/tables')}><NavLink to="/tables" activeClassName="active">Tables</NavLink></MenuItem>
+          <Divider />
         </MenuList>
         : null
     }

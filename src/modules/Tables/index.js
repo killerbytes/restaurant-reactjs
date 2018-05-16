@@ -39,7 +39,7 @@ class Categories extends React.Component {
                 </List>
             </Paper>
 
-            <Button variant="fab" component={Link} to="/tables/new" style={{ position: 'fixed', zIndex: 10, bottom: '2rem', right: '2rem' }}>
+            <Button variant="fab" color="primary" component={Link} to="/tables/new" style={{ position: 'fixed', zIndex: 10, bottom: '2rem', right: '2rem' }}>
                 <ContentAddIcon />
             </Button>
 
