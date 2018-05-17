@@ -76,6 +76,7 @@ class Carts extends React.Component {
     const { match: { params }, carts: { item } } = this.props
     this.props.createTransaction({
       cart_id: item[params.id].id,
+      notes: this.state.notes,
       discount: parseFloat(this.state.discount),
       amount_paid: parseFloat(this.state.amount)
     })
